@@ -94,13 +94,13 @@ class Network(nn.Module):
         self.hidden = nn.Linear(784, 256)
         # Output layer, 10 units - one for each digit
         self.output = nn.Linear(256, 10)
-        
+
     def forward(self, x):
         # Hidden layer with sigmoid activation
         x = F.sigmoid(self.hidden(x)) # First layer (hidden)
         # Output layer with softmax activation
         x = F.softmax(self.output(x), dim=1) # Second layer (output)
-        
+
         return x
 ```
 
@@ -198,7 +198,93 @@ for input, target in dataset:
     optimizer.step()
 ```
 
+Now that we have an idea of what the model would look like from the boiler plate above, we should be able to do a simple network with it.
+
+```python
+## Your solution here
+# TODO: Implement a training pass for the network
+model = nn.Sequential(nn.Linear(784, 128),
+                      nn.ReLU(),
+                      nn.Linear(128, 64),
+                      nn.ReLU(),
+                      nn.Linear(64, 10),
+                      nn.LogSoftmax(dim=1))
+
+criterion = nn.NLLLoss()
+optimizer = optim.SGD(model.parameters(), lr=0.003)
+
+epochs = 5
+for e in range(epochs): # Define how many epochs we would want to train
+    running_loss = 0  # Initialize the loss first to zero
+    for images, labels in trainloader:
+        # Flatten MNIST images into a 784 long vector
+        images = images.view(images.shape[0], -1)
+
+        # TODO: Training pass
+        optimizer.zero_grad()  # We always initialize this to zero every pass
+        logits = model.forward(images)  # We evaluate a forward pass of our model.
+        loss = criterion(logits,labels)  # We calculate our loss.
+        loss.backward()  # We do one backward pass of it to let the autograd know the loss.
+        optimizer.step()  # We call in the step so that our optimizer knows that it can now update the weights.
+        running_loss += loss.item()  # We also want to update the loss of our network to know our progress.
+    else:
+        print(f"Training loss: {running_loss/len(trainloader)}")  # After our model takes a step, we wan to publish its results for verification. We can be more creative on this and plot it later.
+```
+
+Now that there is a model that was trained, our weights should now be updated an our model should now be good to go. Below is a sample of a way we can use the trained model for checking of results. As we can see we need to turn off the gradient updates. This is done because we are do not intend to train our network, we just want to try to pass a sample image to it. Without calling on the `no.grad()` function, the model will acutally consume memory even if we are not doing any operations.
+
+```python
+%matplotlib inline
+import helper
+
+images, labels = next(iter(trainloader))
+
+img = images[0].view(1, 784)
+# Turn off gradients to speed up this part
+with torch.no_grad():  # This will turn of the gradient updates.
+    logits = model.forward(img)  # We make a forward pass on our model based on the input image
+
+# Output of the network are logits, need to take softmax for probabilities
+ps = F.softmax(logits, dim=1)
+helper.view_classify(img.view(1, 28, 28), ps)  # From our helper, we call on the function to help us view the input image and the distribution of the probabilities.
+```
+
+In the example above, we were able to code a network in python for identifying an image from the MNIST dataset, handwritten numbers. Also, do note that this was done with a linear neural network. A CNN would arguably do a better job than this and could handle more difficult tasks. In the meantime, we will one up our training and we will be taking on training a neural network to identify from a more complex dataset, Fashion MNIST.
+
+Installing helper function python codes or pull files from a URL to the notebook. Alternatively, there is an option to upload files in the notebook. It is the third tab from the Table of Contents page under `Files`.
+
+```python
+#NOTE: Use the code below to install
+import os
+if not os.path.isfile('helper.py'):
+
+! wget https://github.com/iocfinc/deep-learning-v2-pytorch/blob/master/intro-to-pytorch/helper.py  #Insert the  URL for the file
+```
+
+Use the code below to install PyTorch, alternatively just use code snippets.
+```python
+#NOTE: Use the code below to install PyTorch in Collab
+# http://pytorch.org/
+from os.path import exists
+from wheel.pep425tags import get_abbr_impl, get_impl_ver, get_abi_tag
+platform = '{}{}-{}'.format(get_abbr_impl(), get_impl_ver(), get_abi_tag())
+cuda_output = !ldconfig -p|grep cudart.so|sed -e 's/.*\.\([0-9]*\)\.\([0-9]*\)$/cu\1\2/'
+accelerator = cuda_output[0] if exists('/dev/nvidia0') else 'cpu'
+
+!pip install -q http://download.pytorch.org/whl/{accelerator}/torch-0.4.1-{platform}-linux_x86_64.whl torchvision
+import torch
+```
+
+## Day 5: November 14, 2018
+
+Currently having some issues downloading the dataset from Fashion MNIST and MNIST via collab or local. Something about an OSError not reading the correct files from the link. Posted it on the Slack channel and got some responses on how to resolve it. They said to try downloading the file again as it might be corrupted which could explain the issue. As a workaround, I opened up the Python Terminal and ran the code from there. Interesting enough, it was able to download the files for the data set. I am not sure why it was throwing a non-gzip file error when I ran it on the notebook. But at least that is resolved. For now, more exercises on training the neural network for Fashion Mnist data set classification.
+
+With regards to using PyTorch in collab, [here](https://cloud.google.com/blog/products/ai-machine-learning/introducing-pytorch-across-google-cloud) is a link detailing how this could be achieved (**in the future**) for now, TPUs are only for TensorFlow in collab which does make sense seeing as they are both Google managed. The good thing is that there is active collaboration between engineers to allow PyTorch the use of TPUs on Collab. Also, this is a [tutorial](https://github.com/nataliasverchkova/on-using-google-colab) for using Google Colab. Here are some more resources. This one is [about using [the GPU in Colab](https://medium.com/deep-learning-turkey/google-colab-free-gpu-tutorial-e113627b9f5d). Then we have [this one](https://jovianlin.io/pytorch-with-gpu-in-google-colab/) which is basically a starters guide on Colab and how to use it (brief explanation).
+
+Now let us move on to inference and validation.
+
 * [x] - Tensors - The data structure of PyTorch
 * [x] - Autograd which is for calculating Gradients in NN training.
 * [x] - Training of an NN using PyTorch.
 * [ ] - Use of PyTorch for Transfer Learning for image detection.
+* [ ] - Figure out using collab for the challenge. There is a GPU and TPU service on the cloud. :joy:
