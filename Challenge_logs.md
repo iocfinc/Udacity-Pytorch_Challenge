@@ -281,7 +281,7 @@ Currently having some issues downloading the dataset from Fashion MNIST and MNIS
 
 With regards to using PyTorch in collab, [here](https://cloud.google.com/blog/products/ai-machine-learning/introducing-pytorch-across-google-cloud) is a link detailing how this could be achieved (**in the future**) for now, TPUs are only for TensorFlow in collab which does make sense seeing as they are both Google managed. The good thing is that there is active collaboration between engineers to allow PyTorch the use of TPUs on Collab. Also, this is a [tutorial](https://github.com/nataliasverchkova/on-using-google-colab) for using Google Colab. Here are some more resources. This one is [about using [the GPU in Colab](https://medium.com/deep-learning-turkey/google-colab-free-gpu-tutorial-e113627b9f5d). Then we have [this one](https://jovianlin.io/pytorch-with-gpu-in-google-colab/) which is basically a starters guide on Colab and how to use it (brief explanation).
 
-Now let us move on to inference and validation.
+Now let us move on to inference and validation. For this one we 
 
 * [x] - Tensors - The data structure of PyTorch
 * [x] - Autograd which is for calculating Gradients in NN training.
