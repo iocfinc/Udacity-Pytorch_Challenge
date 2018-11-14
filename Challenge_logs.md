@@ -279,7 +279,7 @@ import torch
 
 Currently having some issues downloading the dataset from Fashion MNIST and MNIST via collab or local. Something about an OSError not reading the correct files from the link. Posted it on the Slack channel and got some responses on how to resolve it. They said to try downloading the file again as it might be corrupted which could explain the issue. As a workaround, I opened up the Python Terminal and ran the code from there. Interesting enough, it was able to download the files for the data set. I am not sure why it was throwing a non-gzip file error when I ran it on the notebook. But at least that is resolved. For now, more exercises on training the neural network for Fashion Mnist data set classification.
 
-With regards to using PyTorch in collab, [here](https://cloud.google.com/blog/products/ai-machine-learning/introducing-pytorch-across-google-cloud) is a link detailing how this could be achieved (**in the future**) for now, TPUs are only for TensorFlow in collab which does make sense seeing as they are both Google managed. The good thing is that there is active collaboration between engineers to allow PyTorch the use of TPUs on Collab. Also, this is a [tutorial](https://github.com/nataliasverchkova/on-using-google-colab) for using Google Colab. Here are some more resources. This one is [about using [the GPU in Colab](https://medium.com/deep-learning-turkey/google-colab-free-gpu-tutorial-e113627b9f5d). Then we have [this one](https://jovianlin.io/pytorch-with-gpu-in-google-colab/) which is basically a starters guide on Colab and how to use it (brief explanation).
+With regards to using PyTorch in collab, [here](https://cloud.google.com/blog/products/ai-machine-learning/introducing-pytorch-across-google-cloud) is a link detailing how this could be achieved (**in the future**) for now, TPUs are only for TensorFlow in collab which does make sense seeing as they are both Google managed. The good thing is that there is active collaboration between engineers to allow PyTorch the use of TPUs on Collab. Also, this is a [tutorial](https://github.com/nataliasverchkova/on-using-google-colab) for using Google Colab. Here are some more resources. This one is [about using the GPU in Colab](https://medium.com/deep-learning-turkey/google-colab-free-gpu-tutorial-e113627b9f5d). Then we have [this one](https://jovianlin.io/pytorch-with-gpu-in-google-colab/) which is basically a starters guide on Colab and how to use it (brief explanation).
 
 So 2:00 PM right now, my objective is to figure out how to use Collab for this challenge. First off would be mounting Google Drive to the virtual machine. This would be useful in keeping your files at the same place. This also takes care of the dependencies and helper file problems as well as the input files and output files required in running a notebook. To mount it just copy and past the cell below.
 
@@ -291,7 +291,51 @@ drive.mount('/content/gdrive')
 
 If done correctly, it should show up in the Files section of the notebook.
 
-![Google Drive found]('.\images\GoogleDrive-Mount.png')
+<div style="text-align:center"><img src='images\GoogleDrive-Mount.png' width=500px></div>
+
+Now that the drive is mounted, we can now output our files or read our files from it. The code below is from the code snippets of Collab which will create a text file.
+
+```python
+with open('/content/gdrive/My Drive/foo.txt', 'w') as f:
+  f.write('Hello Google Drive!')
+!cat /content/gdrive/My\ Drive/foo.txt
+```
+
+<div style="text-align:center"><img src='images\Foo.png' width=500px></div>
+
+To upload a file from Github to your Google drive we can use `!wget`. For example we would be getting the mnist.py from the Keras Github repo.
+
+```python
+!wget https://raw.githubusercontent.com/keras-team/keras/master/examples/mnist_cnn.py -P 'gdrive/My Drive/Colab Notebooks'
+```
+
+It is important to note somethings when using this method, first is that the file should be in the raw format, otherwise the file will have the html formatting included which would make it unreadable in python. Second is that the location argument should be valid, otherwise a new directory would be created (*save yourself the trouble of debugging due to incorrect spellings*). It should appear both in the Files section of the notebook as well as the Google Drive directory. Or alternatively, you can just download the file itself and upload it manually to your drive. Do note that you can upload your local files to Google Drive as well and the notebook should still see it as long as the Google Drive is mounted. This would be useful if you have some data sets in your local machine.
+
+<div style="text-align:center"><img src='images\mnist-upload.png' width=500px></div>
+
+Next is we will install python dependencies. For example, Keras and PyTorch are not pre-installed in the Collab notebooks. To get them we can use `pip install` in collab notes. You can try to search for the Code Snippets as well if there is already a code that you can add to the notebook to install some dependencies.
+
+```python
+!pip install -q keras
+```
+
+Actually, Collab is smart enough to figure out what you are trying to do and provide the code snippet for you. For example if we try importing an missing dependency, it would automatically flag it and open up the code snippets.
+
+<div style="text-align:center"><img src='images\Codesnippet-install.png' width=500px></div>
+
+Clicking on the 'insert' link in the code snippet would add the code block to get the module, pytorch in this example. All we have to do is run the code block and that should take care of the installation.
+
+We can also run python `.py` script directly in the notebook. Recall that we downloaded the `mnist_cnn.py` file earlier? It is actually a complete script that would run a CNN network for Mnist. Similar to what we would be doing when we are in a terminal, we just need to call python and point to the file we are going to run. It should be the same thing for other files, just as long as they are visible to the notebook or uploaded to Google Drive.
+
+```python
+!python3 "gdrive/My Drive/Colab Notebooks/mnist_cnn.py"
+```
+
+<div style="text-align:center"><img src='images\Execute py files.png' width=800px></div>
+
+And just to get a glimpse of how powerful Collab is (with GPU of course) just look at the speed at which it went through training the epochs. 14s to 9s for 60000 images. In terms of accuracy, MNIST is fairly easy relative to real world datasets. Its the `Hello World!` of CNN so its understandable that the accuracy can get as high as 99.24%.
+
+<div style="text-align:center"><img src='images\mnist-CNN-Run.png' width=800px></div>
 
 * [x] - Tensors - The data structure of PyTorch
 * [x] - Autograd which is for calculating Gradients in NN training.
