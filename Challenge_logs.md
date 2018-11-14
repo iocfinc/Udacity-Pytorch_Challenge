@@ -291,7 +291,7 @@ drive.mount('/content/gdrive')
 
 If done correctly, it should show up in the Files section of the notebook.
 
-<div style="text-align:center"><img src='.\Images\GoogleDrive-Mount.png' width=500px></div>
+<p align="center"><img src='.\Images\GoogleDrive-Mount.png' width=1000px alt = "Mounted Drive"></p>
 
 Now that the drive is mounted, we can now output our files or read our files from it. The code below is from the code snippets of Collab which will create a text file.
 
@@ -301,7 +301,7 @@ with open('/content/gdrive/My Drive/foo.txt', 'w') as f:
 !cat /content/gdrive/My\ Drive/foo.txt
 ```
 
-<div style="text-align:center"><img src='.\Images\Foo.png' width=500px></div>
+<p align="center"><img src='.\Images\Foo.png' width=250px></p>
 
 To upload a file from Github to your Google drive we can use `!wget`. For example we would be getting the mnist.py from the Keras Github repo.
 
@@ -311,7 +311,7 @@ To upload a file from Github to your Google drive we can use `!wget`. For exampl
 
 It is important to note somethings when using this method, first is that the file should be in the raw format, otherwise the file will have the html formatting included which would make it unreadable in python. Second is that the location argument should be valid, otherwise a new directory would be created (*save yourself the trouble of debugging due to incorrect spellings*). It should appear both in the Files section of the notebook as well as the Google Drive directory. Or alternatively, you can just download the file itself and upload it manually to your drive. Do note that you can upload your local files to Google Drive as well and the notebook should still see it as long as the Google Drive is mounted. This would be useful if you have some data sets in your local machine.
 
-<div style="text-align:center"><img src='.\Images\mnist-upload.png' width=500px></div>
+<p align="center"><img src='.\Images\mnist-upload.png' width=500px></p>
 
 Next is we will install python dependencies. For example, Keras and PyTorch are not pre-installed in the Collab notebooks. To get them we can use `pip install` in collab notes. You can try to search for the Code Snippets as well if there is already a code that you can add to the notebook to install some dependencies.
 
@@ -321,7 +321,9 @@ Next is we will install python dependencies. For example, Keras and PyTorch are 
 
 Actually, Collab is smart enough to figure out what you are trying to do and provide the code snippet for you. For example if we try importing an missing dependency, it would automatically flag it and open up the code snippets.
 
-<div style="text-align:center"><img src='.\Images\Codesnippet-install.png' width=500px></div>
+<p align="center">
+ <img src='.\Images\Codesnippet-install.png' width=700px>
+</p>
 
 Clicking on the 'insert' link in the code snippet would add the code block to get the module, pytorch in this example. All we have to do is run the code block and that should take care of the installation.
 
@@ -331,12 +333,11 @@ We can also run python `.py` script directly in the notebook. Recall that we dow
 !python3 "gdrive/My Drive/Colab Notebooks/mnist_cnn.py"
 ```
 
-<div style="text-align:center"><img src='.\Images\Execute py files.png' width=800px></div>
+<p align="center"><img src='.\Images\Execute py files.png' width=800px></p>
 
 And just to get a glimpse of how powerful Collab is (with GPU of course) just look at the speed at which it went through training the epochs. 14s to 9s for 60000 images. In terms of accuracy, MNIST is fairly easy relative to real world datasets. Its the `Hello World!` of CNN so its understandable that the accuracy can get as high as 99.24%.
 
-<div style="text-align:center"><img src='.\Images\mnist-CNN-Run.png' width=800px></div>
-https://github.com/iocfinc/Udacity-Pytorch_Challenge/blob/master/Images/Codesnippet-install.png
+<p align="center"><img src='.\Images\mnist-CNN-Run.png' width=800px></p>
 
 * [x] - Tensors - The data structure of PyTorch
 * [x] - Autograd which is for calculating Gradients in NN training.
