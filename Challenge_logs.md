@@ -335,7 +335,7 @@ We can also run python `.py` script directly in the notebook. Recall that we dow
 
 And just to get a glimpse of how powerful Collab is (with GPU of course) just look at the speed at which it went through training the epochs. 14s to 9s for 60000 images. In terms of accuracy, MNIST is fairly easy relative to real world datasets. Its the `Hello World!` of CNN so its understandable that the accuracy can get as high as 99.24%.
 
-<div style="text-align:center"><img src='images\mnist-CNN-Run.png' width=800px></div>
+<div style="text-align:center"><img src='.\images\mnist-CNN-Run.png' width=800px></div>
 
 * [x] - Tensors - The data structure of PyTorch
 * [x] - Autograd which is for calculating Gradients in NN training.
