@@ -8,11 +8,11 @@ Official start of the challenge. Mostly doing some readings on what the challeng
 
 So today, I have started on the initialization for the challenge. For one, I have joined the [Slack Channel](https://pytorchfbchallenge.slack.com/messages/CDB3N8Q7J/convo/CDB3N8Q7J-1541904940.926900/), its already active and there are already some questions posted. For now I think I can help since I have some experience in the Deep Learning Nanodegree. Also, I have installed pytorch and torchvision as pre-requisites to the course.
 
-Right now I am watching the interview with Soumith Chintala, one of the creators of PyTorch, regarding the history and uniqueness of PyTorch from other frameworks. For one thing, its approach was Python first meaning that the python ways we already now and want are applied to the system. It also has a JIT compiler which bridges the known Deep learning frameworks, caffe, tensorflow, torch, etc.,to be able to convert from one framework to another and also to a deployment ready C code for production. In terms of additional features, the PyTorch team is looking into support for Google Collab (for the free GPUs), more interactive notebooks for trainings and examples and also the use of tensorboard for PyTorch.
+Right now I am watching the interview with Soumith Chintala, one of the creators of PyTorch, regarding the history and uniqueness of PyTorch from other frameworks. For one thing, its approach was Python first meaning that the python ways we already now and want are applied to the system. It also has a JIT compiler which bridges the known Deep learning frameworks, caffe, tensorflow, torch, etc.,to be able to convert from one framework to another and also to a deployment ready C code for production. In terms of additional features, the PyTorch team is looking into support for Google colab (for the free GPUs), more interactive notebooks for trainings and examples and also the use of tensorboard for PyTorch.
 
 Right now its 2:23 PM, I have to pause for this session. I have watched the introduction as well as the introduction to pytorch videos so those are done. I have to do other things for next week but I'll be back probably later tonight. Objective for today is to consume the next lesson which is the Introduction to Pytorch (coding) by Mat Leonard (?).
 
-So now, its 9:00PM. Back at it again. For now the idea is to setup Collab for the notebooks. I found [Collab](https://colab.research.google.com/notebooks/welcome.ipynb#recent=true) and it looks like there is an option for the use of a repository in github. Seems easy. So for now, I'll move over through the Introduction lessons and see what the first lab would be.
+So now, its 9:00PM. Back at it again. For now the idea is to setup colab for the notebooks. I found [colab](https://colab.research.google.com/notebooks/welcome.ipynb#recent=true) and it looks like there is an option for the use of a repository in github. Seems easy. So for now, I'll move over through the Introduction lessons and see what the first lab would be.
 
 So what to expect:
 
@@ -23,10 +23,10 @@ So what to expect:
 
 So first up was tensors in PyTorch. I thought tensors was some sort of proprietary naming of PyTorch, it was not. Its basically referring to the unit of tensor. So after that we went on to discuss `torch.mm` which is the matrix multiplication equivalent of `np.matmul` in torch. Also there is `torch.sum` which can also be called as a method `.sum()` which obviously sums up the values inside it. One important piece of information that was given in the introduction was the use of memory between numpy and torch. Obviously, pytorch will have compatibility with numpy so anything (an array for example) defined in numpy can be ported to torch via `torch.from_numpy` and vice versa via `.numpy`. In these operations, the memory used for the array are one and the same. Meaning that an operation done in an array that was ported to torch will also be reflected in the version of numpy since they are at the same memory. Also, the transpose operation `.T` is not used in torch. Instead, to match the dimensions of matrix multiplication, we are advised to use `.reshape(a,b)`, `.resize(a,b)` or `.view(a,b)` operation. It is highly advised to make use of `.view(a,b)` than the other two as they do have some issues according to Mat Leonard.
 
-So here is an interesting trick for Collab and Google Drive mount. This should help in uploading those modules or python scripts like unit tests and others to your notebook. It will allow you to read from your google drive input files and others as well. A useful tip, you can run bash commands directly in the notebook via `!` command so `!ls` should output the list of files in your current drive. Which is neat.
+So here is an interesting trick for colab and Google Drive mount. This should help in uploading those modules or python scripts like unit tests and others to your notebook. It will allow you to read from your google drive input files and others as well. A useful tip, you can run bash commands directly in the notebook via `!` command so `!ls` should output the list of files in your current drive. Which is neat.
 
 ```python
-# TODO: The code below would start the initialization of your mounting of Google Drive to a Collab notebook.
+# TODO: The code below would start the initialization of your mounting of Google Drive to a colab notebook.
 !apt-get install -y -qq software-properties-common python-software-properties module-init-tools
 !add-apt-repository -y ppa:alessandro-strada/ppa 2>&1 > /dev/null
 !apt-get update -qq 2>&1 > /dev/null
@@ -263,7 +263,7 @@ if not os.path.isfile('helper.py'):
 
 Use the code below to install PyTorch, alternatively just use code snippets.
 ```python
-#NOTE: Use the code below to install PyTorch in Collab
+#NOTE: Use the code below to install PyTorch in colab
 # http://pytorch.org/
 from os.path import exists
 from wheel.pep425tags import get_abbr_impl, get_impl_ver, get_abi_tag
@@ -277,11 +277,11 @@ import torch
 
 ## Day 5: November 14, 2018
 
-Currently having some issues downloading the dataset from Fashion MNIST and MNIST via collab or local. Something about an OSError not reading the correct files from the link. Posted it on the Slack channel and got some responses on how to resolve it. They said to try downloading the file again as it might be corrupted which could explain the issue. As a workaround, I opened up the Python Terminal and ran the code from there. Interesting enough, it was able to download the files for the data set. I am not sure why it was throwing a non-gzip file error when I ran it on the notebook. But at least that is resolved. For now, more exercises on training the neural network for Fashion Mnist data set classification.
+Currently having some issues downloading the dataset from Fashion MNIST and MNIST via colab or local. Something about an OSError not reading the correct files from the link. Posted it on the Slack channel and got some responses on how to resolve it. They said to try downloading the file again as it might be corrupted which could explain the issue. As a workaround, I opened up the Python Terminal and ran the code from there. Interesting enough, it was able to download the files for the data set. I am not sure why it was throwing a non-gzip file error when I ran it on the notebook. But at least that is resolved. For now, more exercises on training the neural network for Fashion Mnist data set classification.
 
-With regards to using PyTorch in collab, [here](https://cloud.google.com/blog/products/ai-machine-learning/introducing-pytorch-across-google-cloud) is a link detailing how this could be achieved (**in the future**) for now, TPUs are only for TensorFlow in collab which does make sense seeing as they are both Google managed. The good thing is that there is active collaboration between engineers to allow PyTorch the use of TPUs on Collab. Also, this is a [tutorial](https://github.com/nataliasverchkova/on-using-google-colab) for using Google Colab. Here are some more resources. This one is [about using the GPU in Colab](https://medium.com/deep-learning-turkey/google-colab-free-gpu-tutorial-e113627b9f5d). Then we have [this one](https://jovianlin.io/pytorch-with-gpu-in-google-colab/) which is basically a starters guide on Colab and how to use it (brief explanation).
+With regards to using PyTorch in colab, [here](https://cloud.google.com/blog/products/ai-machine-learning/introducing-pytorch-across-google-cloud) is a link detailing how this could be achieved (**in the future**) for now, TPUs are only for TensorFlow in colab which does make sense seeing as they are both Google managed. The good thing is that there is active colaboration between engineers to allow PyTorch the use of TPUs on colab. Also, this is a [tutorial](https://github.com/nataliasverchkova/on-using-google-colab) for using Google Colab. Here are some more resources. This one is [about using the GPU in Colab](https://medium.com/deep-learning-turkey/google-colab-free-gpu-tutorial-e113627b9f5d). Then we have [this one](https://jovianlin.io/pytorch-with-gpu-in-google-colab/) which is basically a starters guide on Colab and how to use it (brief explanation).
 
-So 2:00 PM right now, my objective is to figure out how to use Collab for this challenge. First off would be mounting Google Drive to the virtual machine. This would be useful in keeping your files at the same place. This also takes care of the dependencies and helper file problems as well as the input files and output files required in running a notebook. To mount it just copy and past the cell below.
+So 2:00 PM right now, my objective is to figure out how to use colab for this challenge. First off would be mounting Google Drive to the virtual machine. This would be useful in keeping your files at the same place. This also takes care of the dependencies and helper file problems as well as the input files and output files required in running a notebook. To mount it just copy and past the cell below.
 
 ```python
 # NOTE: Mounting Google Drive to the virtual machine
@@ -293,7 +293,7 @@ If done correctly, it should show up in the Files section of the notebook.
 
 <p align="center"><img src='.\Images\GoogleDrive-Mount.png' width=1000px alt = "Mounted Drive"></p>
 
-Now that the drive is mounted, we can now output our files or read our files from it. The code below is from the code snippets of Collab which will create a text file.
+Now that the drive is mounted, we can now output our files or read our files from it. The code below is from the code snippets of colab which will create a text file.
 
 ```python
 with open('/content/gdrive/My Drive/foo.txt', 'w') as f:
@@ -313,13 +313,13 @@ It is important to note somethings when using this method, first is that the fil
 
 <p align="center"><img src='.\Images\mnist-upload.png' width=500px></p>
 
-Next is we will install python dependencies. For example, Keras and PyTorch are not pre-installed in the Collab notebooks. To get them we can use `pip install` in collab notes. You can try to search for the Code Snippets as well if there is already a code that you can add to the notebook to install some dependencies.
+Next is we will install python dependencies. For example, Keras and PyTorch are not pre-installed in the colab notebooks. To get them we can use `pip install` in colab notes. You can try to search for the Code Snippets as well if there is already a code that you can add to the notebook to install some dependencies.
 
 ```python
 !pip install -q keras
 ```
 
-Actually, Collab is smart enough to figure out what you are trying to do and provide the code snippet for you. For example if we try importing an missing dependency, it would automatically flag it and open up the code snippets.
+Actually, colab is smart enough to figure out what you are trying to do and provide the code snippet for you. For example if we try importing an missing dependency, it would automatically flag it and open up the code snippets.
 
 <p align="center">
  <img src='.\Images\Codesnippet-install.png' width=700px>
@@ -335,12 +335,35 @@ We can also run python `.py` script directly in the notebook. Recall that we dow
 
 <p align="center"><img src='.\Images\Execute py files.png' width=800px></p>
 
-And just to get a glimpse of how powerful Collab is (with GPU of course) just look at the speed at which it went through training the epochs. 14s to 9s for 60000 images. In terms of accuracy, MNIST is fairly easy relative to real world datasets. Its the `Hello World!` of CNN so its understandable that the accuracy can get as high as 99.24%.
+And just to get a glimpse of how powerful colab is (with GPU of course) just look at the speed at which it went through training the epochs. 14s to 9s for 60000 images. In terms of accuracy, MNIST is fairly easy relative to real world datasets. Its the `Hello World!` of CNN so its understandable that the accuracy can get as high as 99.24%.
 
 <p align="center"><img src='.\Images\mnist-CNN-Run.png' width=800px></p>
+
+`Up next would be cloning a github repo and running those in colab. We will see if that resolves the helper files issue.`
+
+I was working on figuring out how to clone a github repository to my Google Drive so that we can work from there. As it turns out, I was using the wrong command prefix(?). The general idea is that once the drive is mounted, I need to do changed the directory via `cd`. Once I am in the correct location that is when I will call on `git clone...`. So in short, I need a "scratch" notebook where I can do the sort of terminal commands like cloning and uploading files and fetching data. Once the repositories are uploaded to the drive, that is when I can transfer to those notebooks. Its some sort of nested virtual machines. Its a bit chaotic in the beginning but it makes sense. StackOverflow saves the day for this one. This post regarding [changing the environment](https://stackoverflow.com/questions/48298146/changing-directory-in-google-colab-breaking-out-of-the-python-interpreter) made it more understandable. Using the `!` command is actually applying the command to the current python interpreter subshell. Using the `%` command changes the current working directory for the notebook environment.
+
+```python
+# This will change the working directory, take note of the \ to account for the space character.
+%cd gdrive/My\ Drive/Colab\ Notebooks/
+# Confirm that you are at the correct directory
+!pwd
+# use the git clone command to copy the clone to the virtual environment
+%git clone <github repo url>
+```
+
+Once the repository has been cloned, it should appear now as a folder in your drive. This would allow you to open/edit/save the notebooks via colaboratory. Do note that there is a limit to the free size of Google Drive which is 15Gb. 
+
+<p align="center"><img src='.\Images\Succesful-Clone.png' width=800px></p>
+
+Now that the repository is already in our drive, we can already use colaboratory to open them. So now we can actually make use of the free GPU in Colab to test and train our AI/ML/DL projects. Its also a good thing that Google allows us to use these things for free. Reading up on a background of colaborate, it was actually similar to TensorFlow which was Google's in-house notebook framework allowing them to work with projects in Data Science and AI internally. Once they had a working version it was then released free to the public together with the infrastructure.
+
+<p align="center"><img src='.\Images\Open-Notebooks.png' width=700px></p>
+
+The free GPU in Colab is also limited both in availability and in use time. If I read correctly the time limit for the session would be 12 Hours, double that of Kaggle (which is also Google owned). In terms of GPU availability, I have not experienced it yet but you will know if there are no available sessions with GPU support because there will be a prompt. Asuming that there are 10,000 scholars in the PyTorch challenge, it would be amazing to see if Colab slows down. Hopefully it will not. That should be all for now at Day 5. We will clone the repo for the Deep learning nanodegree and work on the exercises again tomorrow. Considering its still day 5 I am doing a great pace in the challenge. Still a long way to go but at least there is progress.
 
 * [x] - Tensors - The data structure of PyTorch
 * [x] - Autograd which is for calculating Gradients in NN training.
 * [x] - Training of an NN using PyTorch.
 * [ ] - Use of PyTorch for Transfer Learning for image detection.
-* [ ] - Figure out using collab for the challenge. There is a GPU and TPU service on the cloud. :joy:
+* [x] - Figure out using colab for the challenge. There is a GPU and TPU service on the cloud. :joy:
