@@ -458,9 +458,8 @@ train_losses, test_losses = [], []
 for e in range(epochs):
     running_loss = 0
     for images, labels in trainloader:
-
+        # NOTE: This block below is boilerplate.
         optimizer.zero_grad()
-
         log_ps = model(images)
         loss = criterion(log_ps, labels)
         loss.backward()
@@ -497,13 +496,65 @@ There is a general explanation to why overfitting happens. At first the weights 
 
 To help prevent overfitting, we are introduce some randomness to our model in such a way that it discourages overtraining of nodes therefore distributing the weights through out all the possible nodes. One way this is acheived is via the *Dropout* method. The idea behind dropout is that a node will have a chance to be turned off every cycle forcing the network to compensate by updating the weights into other nodes. This way, we are theoretically distributing the weights of our network to better provide accuracy and responsiveness to a different set of inputs. This essentially prevents just some nodes to be trained repeatedly that the model discounts the other nodes' bearing in the model.
 
-To introduce dropout in torch, we simply use `nn.Dropout`.
+To introduce dropout in torch, we simply use `nn.Dropout`. From the [docs](https://pytorch.org/docs/stable/index.html) we can simply make use of the dropout layer and wrap our `ReLU` layers with it. With that lets take a look at the modified code.
+
+```python
+## TODO: Define your model with dropout added
+from torch import nn, optim
+import torch.nn.functional as F
+
+class Classifier(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(784, 256)
+        self.fc2 = nn.Linear(256, 128)
+        self.fc3 = nn.Linear(128, 64)
+        self.fc4 = nn.Linear(64, 10)
+        self.dropout = nn.Dropout(p=0.25)
+
+    def forward(self, x):
+        # make sure input tensor is flattened
+        x = x.view(x.shape[0], -1)
+
+        x = self.dropout(F.relu(self.fc1(x)))
+        x = self.dropout(F.relu(self.fc2(x)))
+        x = self.dropout(F.relu(self.fc3(x)))
+        x = F.log_softmax(self.fc4(x), dim=1)
+
+        return x
+```
+
+Note that the only thing we have to change is how we defined our network. What we added first was the defenition of our `self.dropout` layer which in this case has a probability of 0.25 or 25% dropout. One thing to note here is that we can define multiple dropout layers for more customized experience but since this is a fairly small network, we can stop here. After we have initialized our dropout layer, we just have to wrap our original relu-linear layers with the dropout for example `self.dropout(F.relu(self.fc1(x)))`. Before I forget, the code `def forward` is actually required in the case of `torch.nn` this is where our gradients are computed, this is based on the documentation. So back to droupout, now that we have introduced our dropouts to the network we should get an improvement in terms of our validation losses. As seen on the graph below, our validation loss is decreasing together with our training loss although it is still high but that is already an improvement.
 
 <p align="center"><img src='.\Images\Fit.png' width=700px></p>
 
+Some addtional reading can be found in this tutorial from PyTorch regarding [CIFAR10 Classification](https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html). It touches briefly on the creation of the network for a classifier. Then it also has additional code to check the total accuracy of the network and how to make use of Cuda cores for the increase in speed.
+
+Okay, some additional instructions for dealing with notebooks that require external files like helper files when using Google Colab.
+
 ```python
-cd '/content/gdrive/My Drive/Colab Notebooks/Udacity-Pytorch_Challenge/Exercises'
+# TODO: First we need to mount Google Drive again
+from google.colab import drive
+drive.mount('/content/gdrive')
+
+# TODO: Next is that we have to change the directory of our environment to point to the correct folder in Google Drive where our files reside.
+
+%cd gdrive/My\ Drive/Colab\ Notebooks/Udacity-Pytorch_Challenge/Exercises
+!pwd
+!ls
+
+# NOTE: In case you just need 1 File, you can use these instead
+# wget
+!wget <url>
+# Curl
+! curl -o <file name> <url>
 ```
+
+Now that we have trained our model with good accuracy, we can now use it to predict something. In our case its classifying the correct class that the image belongs to.
+
+<p align="center"><img src='.\Images\Result-Inference.png' width=700px></p>
+
+So now we can proceed with saving and loading the network in PyTorch. I am now at Part 6 of 8. This is not an exercise but a tutorial which would be useful for succeeding exercises.
 
 * [x] - Tensors - The data structure of PyTorch
 * [x] - Autograd which is for calculating Gradients in NN training.
