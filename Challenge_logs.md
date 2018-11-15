@@ -8,11 +8,11 @@ Official start of the challenge. Mostly doing some readings on what the challeng
 
 So today, I have started on the initialization for the challenge. For one, I have joined the [Slack Channel](https://pytorchfbchallenge.slack.com/messages/CDB3N8Q7J/convo/CDB3N8Q7J-1541904940.926900/), its already active and there are already some questions posted. For now I think I can help since I have some experience in the Deep Learning Nanodegree. Also, I have installed pytorch and torchvision as pre-requisites to the course.
 
-Right now I am watching the interview with Soumith Chintala, one of the creators of PyTorch, regarding the history and uniqueness of PyTorch from other frameworks. For one thing, its approach was Python first meaning that the python ways we already now and want are applied to the system. It also has a JIT compiler which bridges the known Deep learning frameworks, caffe, tensorflow, torch, etc.,to be able to convert from one framework to another and also to a deployment ready C code for production. In terms of additional features, the PyTorch team is looking into support for Google colab (for the free GPUs), more interactive notebooks for trainings and examples and also the use of tensorboard for PyTorch.
+Right now I am watching the interview with Soumith Chintala, one of the creators of PyTorch, regarding the history and uniqueness of PyTorch from other frameworks. For one thing, its approach was Python first meaning that the python ways we already now and want are applied to the system. It also has a JIT compiler which bridges the known Deep learning frameworks, caffe, tensorflow, torch, etc.,to be able to convert from one framework to another and also to a deployment ready C code for production. In terms of additional features, the PyTorch team is looking into support for Google Colab (for the free GPUs), more interactive notebooks for trainings and examples and also the use of tensorboard for PyTorch.
 
 Right now its 2:23 PM, I have to pause for this session. I have watched the introduction as well as the introduction to pytorch videos so those are done. I have to do other things for next week but I'll be back probably later tonight. Objective for today is to consume the next lesson which is the Introduction to Pytorch (coding) by Mat Leonard (?).
 
-So now, its 9:00PM. Back at it again. For now the idea is to setup colab for the notebooks. I found [colab](https://colab.research.google.com/notebooks/welcome.ipynb#recent=true) and it looks like there is an option for the use of a repository in github. Seems easy. So for now, I'll move over through the Introduction lessons and see what the first lab would be.
+So now, its 9:00PM. Back at it again. For now the idea is to setup Colab for the notebooks. I found [Colab](https://Colab.research.google.com/notebooks/welcome.ipynb#recent=true) and it looks like there is an option for the use of a repository in GitHub. Seems easy. So for now, I'll move over through the Introduction lessons and see what the first lab would be.
 
 So what to expect:
 
@@ -23,15 +23,15 @@ So what to expect:
 
 So first up was tensors in PyTorch. I thought tensors was some sort of proprietary naming of PyTorch, it was not. Its basically referring to the unit of tensor. So after that we went on to discuss `torch.mm` which is the matrix multiplication equivalent of `np.matmul` in torch. Also there is `torch.sum` which can also be called as a method `.sum()` which obviously sums up the values inside it. One important piece of information that was given in the introduction was the use of memory between numpy and torch. Obviously, pytorch will have compatibility with numpy so anything (an array for example) defined in numpy can be ported to torch via `torch.from_numpy` and vice versa via `.numpy`. In these operations, the memory used for the array are one and the same. Meaning that an operation done in an array that was ported to torch will also be reflected in the version of numpy since they are at the same memory. Also, the transpose operation `.T` is not used in torch. Instead, to match the dimensions of matrix multiplication, we are advised to use `.reshape(a,b)`, `.resize(a,b)` or `.view(a,b)` operation. It is highly advised to make use of `.view(a,b)` than the other two as they do have some issues according to Mat Leonard.
 
-So here is an interesting trick for colab and Google Drive mount. This should help in uploading those modules or python scripts like unit tests and others to your notebook. It will allow you to read from your google drive input files and others as well. A useful tip, you can run bash commands directly in the notebook via `!` command so `!ls` should output the list of files in your current drive. Which is neat.
+So here is an interesting trick for Colab and Google Drive mount. This should help in uploading those modules or python scripts like unit tests and others to your notebook. It will allow you to read from your google drive input files and others as well. A useful tip, you can run bash commands directly in the notebook via `!` command so `!ls` should output the list of files in your current drive. Which is neat.
 
 ```python
-# TODO: The code below would start the initialization of your mounting of Google Drive to a colab notebook.
+# TODO: The code below would start the initialization of your mounting of Google Drive to a Colab notebook.
 !apt-get install -y -qq software-properties-common python-software-properties module-init-tools
 !add-apt-repository -y ppa:alessandro-strada/ppa 2>&1 > /dev/null
 !apt-get update -qq 2>&1 > /dev/null
 !apt-get -y install -qq google-drive-ocamlfuse fuse
-from google.colab import auth
+from google.Colab import auth
 auth.authenticate_user()
 from oauth2client.client import GoogleCredentials
 creds = GoogleCredentials.get_application_default()
@@ -80,7 +80,7 @@ model
 
 ```
 
-In the code block above, we are creating a new class using the torch. We are calling the nn module and from that our `Network` will inherit its `nn.Module`. It is **mandatory** to inherit the `nn.Module` for our class. This will allow us to create the neural network on torch. For the initialized values we need to define the layers and the transformation we want which in this case is linear, I am thinking we can call Convolution or Recurrent later. Then there are the activation functions `nn.Sigmoid()` and `nn.Softmax(dim=1)`. It is important to take note of one unique property in PyTorch (or torch?) which is broadcasting. The argument `dim=1` for the softmax function is used to indicate which way the softmax is applied which in this case is on the column, setting it to 0 would mean that it is on a row. This is also important on other operations as well like division `A/B` which needs to have a `dim` argument with it. Finally, we can compile our model simply by calling out the `Network` class and calling model will simply print out the summary of the model we have created, more like `model.summary()` in Keras.
+In the code block above, we are creating a new class using the torch. We are calling the nn module and from that our `Network` will inherit its `nn.Module`. It is **mandatory** to inherit the `nn.Module` for our class. This will allow us to create the neural network on torch. For the initialized values we need to define the layers and the transformation we want which in this case is linear, I am thinking we can call Convolution or Recurrent later. Then there are the activation functions `nn.Sigmoid()` and `nn.Softmax(dim=1)`. It is important to take note of one unique property in PyTorch (or torch?) which is broadcasting. The argument `dim=1` for the softmax function is used to indicate which way the softmax is applied which in this case is on the column, setting it to 0 would mean that it is on a row. This is also important on other operations as well like division `A/B` which needs to have a `dim` argument with it. Finally, we can compile our model by calling out the `Network` class and calling model will print out the summary of the model we have created, more like `model.summary()` in Keras.
 
 To go more deeper we use the `torch.nn.functional` module to define our network. It should be similar to the use of `torch.nn` but we are encouraged to use this one.
 
@@ -122,9 +122,9 @@ So that portion above was all about setting up a neural network in PyTorch. We s
 
 ## Day 4: November 13, 2018
 
-Now on exercise number 3 of 8: Training Nerual Networks. First off [here](https://pytorch.org/docs/stable/index.html) is the link for the documentation of PyTorch. It comes in handy in getting a deeper understanding of what is being discussed in the notebooks. It has more explanation on the process of [autograd](https://pytorch.org/docs/stable/notes/autograd.html#how-autograd-encodes-the-history). I was reading about the autograd feature and its quite intuitive actually and it is what allows PyTorch to be faster, especially in distributed computation (GPU/CUDA). Its whats going to allow computation of gradients during every pass, which in turn would allow us to manually set a layer to not update (for example, transfer learning).
+Now on exercise number 3 of 8: Training Neural Networks. First off [here](https://pytorch.org/docs/stable/index.html) is the link for the documentation of PyTorch. It comes in handy in getting a deeper understanding of what is being discussed in the notebooks. It has more explanation on the process of [autograd](https://pytorch.org/docs/stable/notes/autograd.html#how-autograd-encodes-the-history). I was reading about the autograd feature and its quite intuitive actually and it is what allows PyTorch to be faster, especially in distributed computation (GPU/CUDA). Its whats going to allow computation of gradients during every pass, which in turn would allow us to manually set a layer to not update (for example, transfer learning).
 
-After autograd we move into [Broadcasting semantics](https://pytorch.org/docs/stable/notes/broadcasting.html) for PyTorch. Apparently, its an inheritance of the NumPy broadcasting semantics. It is simply solving or pointing out dimensionality match or mismatches when we operate tensors (which we will as we progress). One possible way to reduce this error/complication is to understand the basics of Matrix Multiplication, mostly that it is not commutative (orders matter especially in determining the shape of the output).
+After autograd we move into [Broadcasting semantics](https://pytorch.org/docs/stable/notes/broadcasting.html) for PyTorch. Apparently, its an inheritance of the NumPy broadcasting semantics. It is solving or pointing out dimensionality match or mismatches when we operate tensors (which we will as we progress). One possible way to reduce this error/complication is to understand the basics of Matrix Multiplication, mostly that it is not commutative (orders matter especially in determining the shape of the output).
 
 ```python
 #NOTE: This is taken from the Docs of PyTorch.
@@ -231,7 +231,7 @@ for e in range(epochs): # Define how many epochs we would want to train
         print(f"Training loss: {running_loss/len(trainloader)}")  # After our model takes a step, we wan to publish its results for verification. We can be more creative on this and plot it later.
 ```
 
-Now that there is a model that was trained, our weights should now be updated an our model should now be good to go. Below is a sample of a way we can use the trained model for checking of results. As we can see we need to turn off the gradient updates. This is done because we are do not intend to train our network, we just want to try to pass a sample image to it. Without calling on the `no.grad()` function, the model will acutally consume memory even if we are not doing any operations.
+Now that there is a model that was trained, our weights should now be updated an our model should now be good to go. Below is a sample of a way we can use the trained model for checking of results. As we can see we need to turn off the gradient updates. This is done because we are do not intend to train our network, we just want to try to pass a sample image to it. Without calling on the `no.grad()` function, the model will actually consume memory even if we are not doing any operations.
 
 ```python
 %matplotlib inline
@@ -258,12 +258,12 @@ Installing helper function python codes or pull files from a URL to the notebook
 import os
 if not os.path.isfile('helper.py'):
 
-! wget https://github.com/iocfinc/deep-learning-v2-pytorch/blob/master/intro-to-pytorch/helper.py  #Insert the  URL for the file
+! wget https://GitHub.com/iocfinc/deep-learning-v2-pytorch/blob/master/intro-to-pytorch/helper.py  #Insert the  URL for the file
 ```
 
 Use the code below to install PyTorch, alternatively just use code snippets.
 ```python
-#NOTE: Use the code below to install PyTorch in colab
+#NOTE: Use the code below to install PyTorch in Colab
 # http://pytorch.org/
 from os.path import exists
 from wheel.pep425tags import get_abbr_impl, get_impl_ver, get_abi_tag
@@ -277,15 +277,15 @@ import torch
 
 ## Day 5: November 14, 2018
 
-Currently having some issues downloading the dataset from Fashion MNIST and MNIST via colab or local. Something about an OSError not reading the correct files from the link. Posted it on the Slack channel and got some responses on how to resolve it. They said to try downloading the file again as it might be corrupted which could explain the issue. As a workaround, I opened up the Python Terminal and ran the code from there. Interesting enough, it was able to download the files for the data set. I am not sure why it was throwing a non-gzip file error when I ran it on the notebook. But at least that is resolved. For now, more exercises on training the neural network for Fashion Mnist data set classification.
+Currently having some issues downloading the dataset from Fashion MNIST and MNIST via Colab or local. Something about an OSError not reading the correct files from the link. Posted it on the Slack channel and got some responses on how to resolve it. They said to try downloading the file again as it might be corrupted which could explain the issue. As a workaround, I opened up the Python Terminal and ran the code from there. Interesting enough, it was able to download the files for the data set. I am not sure why it was throwing a non-gzip file error when I ran it on the notebook. But at least that is resolved. For now, more exercises on training the neural network for Fashion Mnist data set classification.
 
-With regards to using PyTorch in colab, [here](https://cloud.google.com/blog/products/ai-machine-learning/introducing-pytorch-across-google-cloud) is a link detailing how this could be achieved (**in the future**) for now, TPUs are only for TensorFlow in colab which does make sense seeing as they are both Google managed. The good thing is that there is active colaboration between engineers to allow PyTorch the use of TPUs on colab. Also, this is a [tutorial](https://github.com/nataliasverchkova/on-using-google-colab) for using Google Colab. Here are some more resources. This one is [about using the GPU in Colab](https://medium.com/deep-learning-turkey/google-colab-free-gpu-tutorial-e113627b9f5d). Then we have [this one](https://jovianlin.io/pytorch-with-gpu-in-google-colab/) which is basically a starters guide on Colab and how to use it (brief explanation).
+With regards to using PyTorch in Colab, [here](https://cloud.google.com/blog/products/ai-machine-learning/introducing-pytorch-across-google-cloud) is a link detailing how this could be achieved (**in the future**) for now, TPUs are only for TensorFlow in Colab which does make sense seeing as they are both Google managed. The good thing is that there is active colaboration between engineers to allow PyTorch the use of TPUs on Colab. Also, this is a [tutorial](https://GitHub.com/nataliasverchkova/on-using-google-Colab) for using Google Colab. Here are some more resources. This one is [about using the GPU in Colab](https://medium.com/deep-learning-turkey/google-Colab-free-gpu-tutorial-e113627b9f5d). Then we have [this one](https://jovianlin.io/pytorch-with-gpu-in-google-Colab/) which is basically a starters guide on Colab and how to use it (brief explanation).
 
-So 2:00 PM right now, my objective is to figure out how to use colab for this challenge. First off would be mounting Google Drive to the virtual machine. This would be useful in keeping your files at the same place. This also takes care of the dependencies and helper file problems as well as the input files and output files required in running a notebook. To mount it just copy and past the cell below.
+So 2:00 PM right now, my objective is to figure out how to use Colab for this challenge. First off would be mounting Google Drive to the virtual machine. This would be useful in keeping your files at the same place. This also takes care of the dependencies and helper file problems as well as the input files and output files required in running a notebook. To mount it just copy and past the cell below.
 
 ```python
 # NOTE: Mounting Google Drive to the virtual machine
-from google.colab import drive
+from google.Colab import drive
 drive.mount('/content/gdrive')
 ```
 
@@ -293,7 +293,7 @@ If done correctly, it should show up in the Files section of the notebook.
 
 <p align="center"><img src='.\Images\GoogleDrive-Mount.png' width=1000px alt = "Mounted Drive"></p>
 
-Now that the drive is mounted, we can now output our files or read our files from it. The code below is from the code snippets of colab which will create a text file.
+Now that the drive is mounted, we can now output our files or read our files from it. The code below is from the code snippets of Colab which will create a text file.
 
 ```python
 with open('/content/gdrive/My Drive/foo.txt', 'w') as f:
@@ -303,7 +303,7 @@ with open('/content/gdrive/My Drive/foo.txt', 'w') as f:
 
 <p align="center"><img src='.\Images\Foo.png' width=250px></p>
 
-To upload a file from Github to your Google drive we can use `!wget`. For example we would be getting the mnist.py from the Keras Github repo.
+To upload a file from GitHub to your Google drive we can use `!wget`. For example we would be getting the mnist.py from the Keras GitHub repo.
 
 ```python
 !wget https://raw.githubusercontent.com/keras-team/keras/master/examples/mnist_cnn.py -P 'gdrive/My Drive/Colab Notebooks'
@@ -313,13 +313,13 @@ It is important to note somethings when using this method, first is that the fil
 
 <p align="center"><img src='.\Images\mnist-upload.png' width=500px></p>
 
-Next is we will install python dependencies. For example, Keras and PyTorch are not pre-installed in the colab notebooks. To get them we can use `pip install` in colab notes. You can try to search for the Code Snippets as well if there is already a code that you can add to the notebook to install some dependencies.
+Next is we will install python dependencies. For example, Keras and PyTorch are not pre-installed in the Colab notebooks. To get them we can use `pip install` in Colab notes. You can try to search for the Code Snippets as well if there is already a code that you can add to the notebook to install some dependencies.
 
 ```python
 !pip install -q keras
 ```
 
-Actually, colab is smart enough to figure out what you are trying to do and provide the code snippet for you. For example if we try importing an missing dependency, it would automatically flag it and open up the code snippets.
+Actually, Colab is smart enough to figure out what you are trying to do and provide the code snippet for you. For example if we try importing an missing dependency, it would automatically flag it and open up the code snippets.
 
 <p align="center">
  <img src='.\Images\Codesnippet-install.png' width=700px>
@@ -335,13 +335,13 @@ We can also run python `.py` script directly in the notebook. Recall that we dow
 
 <p align="center"><img src='.\Images\Execute py files.png' width=800px></p>
 
-And just to get a glimpse of how powerful colab is (with GPU of course) just look at the speed at which it went through training the epochs. 14s to 9s for 60000 images. In terms of accuracy, MNIST is fairly easy relative to real world datasets. Its the `Hello World!` of CNN so its understandable that the accuracy can get as high as 99.24%.
+And just to get a glimpse of how powerful Colab is (with GPU of course) just look at the speed at which it went through training the epochs. 14s to 9s for 60000 images. In terms of accuracy, MNIST is fairly easy relative to real world datasets. Its the `Hello World!` of CNN so its understandable that the accuracy can get as high as 99.24%.
 
 <p align="center"><img src='.\Images\mnist-CNN-Run.png' width=800px></p>
 
-`Up next would be cloning a github repo and running those in colab. We will see if that resolves the helper files issue.`
+`Up next would be cloning a GitHub repo and running those in Colab. We will see if that resolves the helper files issue.`
 
-I was working on figuring out how to clone a github repository to my Google Drive so that we can work from there. As it turns out, I was using the wrong command prefix(?). The general idea is that once the drive is mounted, I need to do changed the directory via `cd`. Once I am in the correct location that is when I will call on `git clone...`. So in short, I need a "scratch" notebook where I can do the sort of terminal commands like cloning and uploading files and fetching data. Once the repositories are uploaded to the drive, that is when I can transfer to those notebooks. Its some sort of nested virtual machines. Its a bit chaotic in the beginning but it makes sense. StackOverflow saves the day for this one. This post regarding [changing the environment](https://stackoverflow.com/questions/48298146/changing-directory-in-google-colab-breaking-out-of-the-python-interpreter) made it more understandable. Using the `!` command is actually applying the command to the current python interpreter subshell. Using the `%` command changes the current working directory for the notebook environment.
+I was working on figuring out how to clone a GitHub repository to my Google Drive so that we can work from there. As it turns out, I was using the wrong command prefix(?). The general idea is that once the drive is mounted, I need to do changed the directory via `cd`. Once I am in the correct location that is when I will call on `git clone...`. So in short, I need a "scratch" notebook where I can do the sort of terminal commands like cloning and uploading files and fetching data. Once the repositories are uploaded to the drive, that is when I can transfer to those notebooks. Its some sort of nested virtual machines. Its a bit chaotic in the beginning but it makes sense. StackOverflow saves the day for this one. This post regarding [changing the environment](https://stackoverflow.com/questions/48298146/changing-directory-in-google-Colab-breaking-out-of-the-python-interpreter) made it more understandable. Using the `!` command is actually applying the command to the current python interpreter subshell. Using the `%` command changes the current working directory for the notebook environment.
 
 ```python
 # This will change the working directory, take note of the \ to account for the space character.
@@ -349,22 +349,22 @@ I was working on figuring out how to clone a github repository to my Google Driv
 # Confirm that you are at the correct directory
 !pwd
 # use the git clone command to copy the clone to the virtual environment
-%git clone <github repo url>
+%git clone <GitHub repo url>
 ```
 
 Once the repository has been cloned, it should appear now as a folder in your drive. This would allow you to open/edit/save the notebooks via colaboratory. Do note that there is a limit to the free size of Google Drive which is 15Gb. 
 
 <p align="center"><img src='.\Images\Succesful-Clone.png' width=800px></p>
 
-Now that the repository is already in our drive, we can already use colaboratory to open them. So now we can actually make use of the free GPU in Colab to test and train our AI/ML/DL projects. Its also a good thing that Google allows us to use these things for free. Reading up on a background of colaborate, it was actually similar to TensorFlow which was Google's in-house notebook framework allowing them to work with projects in Data Science and AI internally. Once they had a working version it was then released free to the public together with the infrastructure.
+Now that the repository is already in our drive, we can already use colaboratory to open them. So now we can actually make use of the free GPU in Colab to test and train our AI/ML/DL projects. Its also a good thing that Google allows us to use these things for free. Reading up on a background of colaboratory, it was actually similar to TensorFlow which was Google's in-house notebook framework allowing them to work with projects in Data Science and AI internally. Once they had a working version it was then released free to the public together with the infrastructure.
 
 <p align="center"><img src='.\Images\Open-Notebooks.png' width=700px></p>
 
-The free GPU in Colab is also limited both in availability and in use time. If I read correctly the time limit for the session would be 12 Hours, double that of Kaggle (which is also Google owned). In terms of GPU availability, I have not experienced it yet but you will know if there are no available sessions with GPU support because there will be a prompt. Asuming that there are 10,000 scholars in the PyTorch challenge, it would be amazing to see if Colab slows down. Hopefully it will not. That should be all for now at Day 5. We will clone the repo for the Deep learning nanodegree and work on the exercises again tomorrow. Considering its still day 5 I am doing a great pace in the challenge. Still a long way to go but at least there is progress.
+The free GPU in Colab is also limited both in availability and in use time. If I read correctly the time limit for the session would be 12 Hours, double that of Kaggle (which is also Google owned). In terms of GPU availability, I have not experienced it yet but you will know if there are no available sessions with GPU support because there will be a prompt. Assuming that there are 10,000 scholars in the PyTorch challenge, it would be amazing to see if Colab slows down. Hopefully it will not. That should be all for now at Day 5. We will clone the repo for the Deep learning nanodegree and work on the exercises again tomorrow. Considering its still day 5 I am doing a great pace in the challenge. Still a long way to go but at least there is progress.
 
 ## Day 6: November 15, 2018
 
-First off, a continuation of the topic yesterday is the use of cuda cores for PyTorch. After installing PyTorch in Colab we need to first do two things to enable the use of Cuda Cores. First is we set the runtime Harware Acceleration to a GPU instance. Then the next would be adding the code below to notebook *just before* training the network. Take note that in the `net.cuda()` call, `net` is the name of the model that was defined. If for example we instead used `modlel = Classifier()` then it should be `model.cuda()` to enable the use of the Cuda cores.
+First off, a continuation of the topic yesterday is the use of cuda cores for PyTorch. After installing PyTorch in Colab we need to first do two things to enable the use of Cuda Cores. First is we set the runtime Hardware Acceleration to a GPU instance. Then the next would be adding the code below to notebook *just before* training the network. Take note that in the `net.cuda()` call, `net` is the name of the model that was defined. If for example we instead used `modlel = Classifier()` then it should be `model.cuda()` to enable the use of the Cuda cores.
 
 ```python
 use_cuda = True
@@ -373,9 +373,9 @@ if use_cuda and torch.cuda.is_available():
 print(use_cuda and torch.cuda.is_available())
 ```
 
-One thing that I was not able to solve is how to pull updates from cloned repo to Google Drive. I tried using the `!git fetch` command but that was not working for me. It did run but the file was not reflecting to the Google Drive folder. I had to remove the actual folder in Drive from the front end and update the Github repo *before* using `!git clone` again. Its not ideal but its what works for now.
+One thing that I was not able to solve is how to pull updates from cloned repo to Google Drive. I tried using the `!git fetch` command but that was not working for me. It did run but the file was not reflecting to the Google Drive folder. I had to remove the actual folder in Drive from the front end and update the GitHub repo *before* using `!git clone` again. Its not ideal but its what works for now.
 
-So now that we have been able to setup Colab and clone our repositories to colab, we can now resume the Exercises for the Intro To PyTorch series. We are now at Part 5 which is about inference and validation. What we are going to do basically is study **overfitting** of a network and use a trained network to predict the outcome. First thing we have to discuss is **overfitting**. This is what happens when our model is actually trying to memorize the features of a data instead of trying to learn the general concept of the data set. The example given here is about studying in an exam. When you overfit, you study past quizes to the point that you already memorized the answers. The problem here is that you will not be able to adjust when the questions change in the exam because all you did was memorize. You can also be *underfitted* where you skimped through all the possible lessons and topics that might come out. While you will be able to figure out some answers you would not be able to get many of them correctly as you have not made any effort to relate all the facts into one cohesive knowledge. The best fit would then be when you are able to understand a topic in a way that you can explain the concept behind it. In terms of its features, you know how each are connected to one another. The same holds true for our model. We do not want it to memorize the input since it will not do well once we change our inputs from training to testing sets. We also want it to have layered connection so that it can actually make inferences based on the features and context given on each layer. Ideally, our model should be trained such that it is able to identify the features that matter for an object in order for it to relate the different features to come up with a probability distribution for classification.
+So now that we have been able to setup Colab and clone our repositories to Colab, we can now resume the Exercises for the Intro to PyTorch series. We are now at Part 5 which is about inference and validation. What we are going to do basically is study **overfitting** of a network and use a trained network to predict the outcome. First thing we have to discuss is **overfitting**. This is what happens when our model is actually trying to memorize the features of a data instead of trying to learn the general concept of the data set. The example given here is about studying in an exam. When you overfit, you study past quizzes to the point that you already memorized the answers. The problem here is that you will not be able to adjust when the questions change in the exam because all you did was memorize. You can also be *underfitted* where you skimped through all the possible lessons and topics that might come out. While you will be able to figure out some answers you would not be able to get many of them correctly as you have not made any effort to relate all the facts into one cohesive knowledge. The best fit would then be when you are able to understand a topic in a way that you can explain the concept behind it. In terms of its features, you know how each are connected to one another. The same holds true for our model. We do not want it to memorize the input since it will not do well once we change our inputs from training to testing sets. We also want it to have layered connection so that it can actually make inferences based on the features and context given on each layer. Ideally, our model should be trained such that it is able to identify the features that matter for an object in order for it to relate the different features to come up with a probability distribution for classification.
 
 ```python
 # http://pytorch.org/
@@ -488,15 +488,15 @@ for e in range(epochs):
         print('Accuracy: {:.3f}'.format(accuracy/b))
 ```
 
-The entire code above is the whole code for a vanilla version of Neural Network used in classifying an image from Fashion MNIST into its appropriate category. While the model above works, it has a problem of being over fitted. Below is the graph of the loss between training and validation. As we can see, the training loss constantly decreased but the validation loss did not improve. A brief background between training and validation is that they are seperate data used to guage how the model is progressing during training. To put simply in the context of overfitting, the two are separate sets of inputs. What happens essentially is that the network is overtraining on the training set (due to the repetition) and it simply memorizes the answers instead of the features. This eventually leads to poor performance or no improvement in the scores when the model is shown the different input taken from the validation set.
+The entire code above is the whole code for a vanilla version of Neural Network used in classifying an image from Fashion MNIST into its appropriate category. While the model above works, it has a problem of being over fitted. Below is the graph of the loss between training and validation. As we can see, the training loss constantly decreased but the validation loss did not improve. A brief background between training and validation is that they are separate data used to gauge how the model is progressing during training. To put simply in the context of overfitting, the two are separate sets of inputs. What happens essentially is that the network is overtraining on the training set (due to the repetition) and it simply memorizes the answers instead of the features. This eventually leads to poor performance or no improvement in the scores when the model is shown the different input taken from the validation set.
 
 <p align="center"><img src='.\Images\OverFit.png' width=700px></p>
 
 There is a general explanation to why overfitting happens. At first the weights of the model are randomly generated. At the first pass, here would be nodes that gets triggered so they get updated first. On the second pass, the same neurons may again get activated further increasing the bearing of their magnitude to the outcome of the network. Doing this repeatedly and those nodes that had an early start in training eventually get trained more and as a result gets more "reliable" in a sense that it contributes more to the accuracy. What happened was that the model became specialized into solving just one set of problem.
 
-To help prevent overfitting, we are introduce some randomness to our model in such a way that it discourages overtraining of nodes therefore distributing the weights through out all the possible nodes. One way this is acheived is via the *Dropout* method. The idea behind dropout is that a node will have a chance to be turned off every cycle forcing the network to compensate by updating the weights into other nodes. This way, we are theoretically distributing the weights of our network to better provide accuracy and responsiveness to a different set of inputs. This essentially prevents just some nodes to be trained repeatedly that the model discounts the other nodes' bearing in the model.
+To help prevent overfitting, we are introduce some randomness to our model in such a way that it discourages overtraining of nodes therefore distributing the weights through out all the possible nodes. One way this is achieved is via the *Dropout* method. The idea behind dropout is that a node will have a chance to be turned off every cycle forcing the network to compensate by updating the weights into other nodes. This way, we are theoretically distributing the weights of our network to better provide accuracy and responsiveness to a different set of inputs. This essentially prevents just some nodes to be trained repeatedly that the model discounts the other nodes' bearing in the model.
 
-To introduce dropout in torch, we simply use `nn.Dropout`. From the [docs](https://pytorch.org/docs/stable/index.html) we can simply make use of the dropout layer and wrap our `ReLU` layers with it. With that lets take a look at the modified code.
+To introduce dropout in torch, we use `nn.Dropout`. From the [docs](https://pytorch.org/docs/stable/index.html) we can make use of the dropout layer and wrap our `ReLU` layers with it. With that lets take a look at the modified code.
 
 ```python
 ## TODO: Define your model with dropout added
@@ -524,7 +524,7 @@ class Classifier(nn.Module):
         return x
 ```
 
-Note that the only thing we have to change is how we defined our network. What we added first was the defenition of our `self.dropout` layer which in this case has a probability of 0.25 or 25% dropout. One thing to note here is that we can define multiple dropout layers for more customized experience but since this is a fairly small network, we can stop here. After we have initialized our dropout layer, we just have to wrap our original relu-linear layers with the dropout for example `self.dropout(F.relu(self.fc1(x)))`. Before I forget, the code `def forward` is actually required in the case of `torch.nn` this is where our gradients are computed, this is based on the documentation. So back to droupout, now that we have introduced our dropouts to the network we should get an improvement in terms of our validation losses. As seen on the graph below, our validation loss is decreasing together with our training loss although it is still high but that is already an improvement.
+Note that the only thing we have to change is how we defined our network. What we added first was the definition of our `self.dropout` layer which in this case has a probability of 0.25 or 25% dropout. One thing to note here is that we can define multiple dropout layers for more customized experience but since this is a fairly small network, we can stop here. After we have initialized our dropout layer, we just have to wrap our original relu-linear layers with the dropout for example `self.dropout(F.relu(self.fc1(x)))`. Before I forget, the code `def forward` is actually required in the case of `torch.nn` this is where our gradients are computed, this is based on the documentation. So back to droup out, now that we have introduced our dropouts to the network we should get an improvement in terms of our validation losses. As seen on the graph below, our validation loss is decreasing together with our training loss although it is still high but that is already an improvement.
 
 <p align="center"><img src='.\Images\Fit.png' width=700px></p>
 
@@ -534,7 +534,7 @@ Okay, some additional instructions for dealing with notebooks that require exter
 
 ```python
 # TODO: First we need to mount Google Drive again
-from google.colab import drive
+from google.Colab import drive
 drive.mount('/content/gdrive')
 
 # TODO: Next is that we have to change the directory of our environment to point to the correct folder in Google Drive where our files reside.
@@ -554,10 +554,71 @@ Now that we have trained our model with good accuracy, we can now use it to pred
 
 <p align="center"><img src='.\Images\Result-Inference.png' width=700px></p>
 
-So now we can proceed with saving and loading the network in PyTorch. I am now at Part 6 of 8. This is not an exercise but a tutorial which would be useful for succeeding exercises.
+So now we can proceed with saving and loading the network in PyTorch. I am now at Part 6 of 8. This is not an exercise but a tutorial which would be useful for succeeding exercises. To save models, we just use `torch.save`. Based on the [tutorial](https://pytorch.org/tutorials/beginner/saving_loading_models.html), the save module uses Python's pickle utility. To load we just call on `torch.load`. To load the model's parameter, we use `torch.nn.Module.load_state_dict` which would output all the parameters saved in the model's dictionary. So first of all what is a `state_dict`? These are the dictionary mappings for each layer to its corresponding parameter. For the model itself, this would be the weights and biases of every individual layer in that network.
+
+```python
+# Saving models
+torch.save(<model name>.state_dict(), <path>)
+# Loading models
+model = modelClass(*args, **kwargs)
+model.load_state_dict(torch.load(<path>))
+model.eval()  # Call on this BEFORE running any inference when you have dropouts and batch normalization layers.
+```
+
+From the tutorial, we get the following recommended methods when saving and loading models. The common convention for saving a model is to use the extension `.pt` or `.pth` for the path filename. Also, it is important to note that `load_state_dict()` requires that our path is deserialized first into its dictionary format, this is the reason for calling `torch.load(<path>)` first.
+
+```python
+# Alternative way but not recommended
+torch.save(<model name>,<path>)
+
+model = torch.load(<path>)
+model.eval()
+```
+
+In the alternate way of saving and loading, we are making use directly of pickle. We do not save the mappings of the state but instead save the model class directly. This could potentially lead to issues when used or loaded into other projects.
+
+```python
+# General Checkpoint, can be used to load the model for use or when we want to resume training.
+torch.save({
+    'epoch':epoch,
+    'model_state_dict':model.state_dict(),
+    'optimizer_state_dict':optimizer.state_dict(),
+    'loss':loss,
+    <additional arguments>:<additonal argument variables>},
+    <path>)
+
+model = modelClass(*args, **kwargs)
+optimizer = optimizerClass(*args, **kwargs)
+
+checkpoint = torch.load(<path>)
+model.load_state_dict(checkpoint['model_state_dict'])
+optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+epoch = checkpoint['epoch']
+loss = checkpoint['loss']
+<Additional arguments/variables>
+
+model.eval()
+# or 
+model.train()
+```
+
+The code block above shows how we can customize our saved model. What we can do is we can create a dictionary with the values we want to save. This would be useful for example when we want to pause training and check our progress, or if we want to save checkpoints after some iterations. This could also be useful when we want to share our model to others so that they can continue working on it or in cases of transfer learning. By understanding that the `torch.load()` module requires a serialized dictionary input, we can use that to our advantage by customizing as much of information as we want. To load the model, we just have to input the correct key mapping and we can go from there.
+
+```python
+# Warmstarting model using parameters from a different model
+# Saving model A
+torch.save(modelA.state_dict(),path)
+# Creating and loading to model B
+modelB = modelBClass(*args, **kwargs)
+modelB.load_state_dict(torch.load(<path>), strict = False)
+```
+
+The code above is for warmstarting another model from a previous model's parameters (i.e. Transfer Learning). There would be cases where we might want to augment a working model from our colleague and add some more layers or change some parameters to get better results or to match our use case. This is where warmstarting of models are applied. By adding the argument `strict = False`, we are telling the function to ignore keys that are not matching.
+
+In the tutorials for saving and loading there are [more options](https://pytorch.org/tutorials/beginner/saving_loading_models.html#saving-loading-model-across-devices) discussed. Since PyTorch can run on both CPU and GPU, there are methods on which the model is saved to ensure compatibility between those devices, for example saving on CPU and loading on GPU and vice versa. Those are covered in the tutorial in PyTorch.
 
 * [x] - Tensors - The data structure of PyTorch
 * [x] - Autograd which is for calculating Gradients in NN training.
 * [x] - Training of an NN using PyTorch.
 * [ ] - Use of PyTorch for Transfer Learning for image detection.
-* [x] - Figure out using colab for the challenge. There is a GPU and TPU service on the cloud. :joy:
+* [x] - Figure out using Colab for the challenge. There is a GPU and TPU service on the cloud. :joy:
