@@ -362,6 +362,149 @@ Now that the repository is already in our drive, we can already use colaboratory
 
 The free GPU in Colab is also limited both in availability and in use time. If I read correctly the time limit for the session would be 12 Hours, double that of Kaggle (which is also Google owned). In terms of GPU availability, I have not experienced it yet but you will know if there are no available sessions with GPU support because there will be a prompt. Asuming that there are 10,000 scholars in the PyTorch challenge, it would be amazing to see if Colab slows down. Hopefully it will not. That should be all for now at Day 5. We will clone the repo for the Deep learning nanodegree and work on the exercises again tomorrow. Considering its still day 5 I am doing a great pace in the challenge. Still a long way to go but at least there is progress.
 
+## Day 6: November 15, 2018
+
+First off, a continuation of the topic yesterday is the use of cuda cores for PyTorch. After installing PyTorch in Colab we need to first do two things to enable the use of Cuda Cores. First is we set the runtime Harware Acceleration to a GPU instance. Then the next would be adding the code below to notebook *just before* training the network. Take note that in the `net.cuda()` call, `net` is the name of the model that was defined. If for example we instead used `modlel = Classifier()` then it should be `model.cuda()` to enable the use of the Cuda cores.
+
+```python
+use_cuda = True
+if use_cuda and torch.cuda.is_available():
+  net.cuda()
+print(use_cuda and torch.cuda.is_available())
+```
+
+One thing that I was not able to solve is how to pull updates from cloned repo to Google Drive. I tried using the `!git fetch` command but that was not working for me. It did run but the file was not reflecting to the Google Drive folder. I had to remove the actual folder in Drive from the front end and update the Github repo *before* using `!git clone` again. Its not ideal but its what works for now.
+
+So now that we have been able to setup Colab and clone our repositories to colab, we can now resume the Exercises for the Intro To PyTorch series. We are now at Part 5 which is about inference and validation. What we are going to do basically is study **overfitting** of a network and use a trained network to predict the outcome. First thing we have to discuss is **overfitting**. This is what happens when our model is actually trying to memorize the features of a data instead of trying to learn the general concept of the data set. The example given here is about studying in an exam. When you overfit, you study past quizes to the point that you already memorized the answers. The problem here is that you will not be able to adjust when the questions change in the exam because all you did was memorize. You can also be *underfitted* where you skimped through all the possible lessons and topics that might come out. While you will be able to figure out some answers you would not be able to get many of them correctly as you have not made any effort to relate all the facts into one cohesive knowledge. The best fit would then be when you are able to understand a topic in a way that you can explain the concept behind it. In terms of its features, you know how each are connected to one another. The same holds true for our model. We do not want it to memorize the input since it will not do well once we change our inputs from training to testing sets. We also want it to have layered connection so that it can actually make inferences based on the features and context given on each layer. Ideally, our model should be trained such that it is able to identify the features that matter for an object in order for it to relate the different features to come up with a probability distribution for classification.
+
+```python
+# http://pytorch.org/
+from os.path import exists
+from wheel.pep425tags import get_abbr_impl, get_impl_ver, get_abi_tag
+platform = '{}{}-{}'.format(get_abbr_impl(), get_impl_ver(), get_abi_tag())
+cuda_output = !ldconfig -p|grep cudart.so|sed -e 's/.*\.\([0-9]*\)\.\([0-9]*\)$/cu\1\2/'
+accelerator = cuda_output[0] if exists('/dev/nvidia0') else 'cpu'
+
+!pip install -q http://download.pytorch.org/whl/{accelerator}/torch-0.4.1-{platform}-linux_x86_64.whl torchvision
+
+import torch
+from torchvision import datasets, transforms
+
+# Define a transform to normalize the data
+transform = transforms.Compose([transforms.ToTensor(),
+                                transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+# Download and load the training data
+trainset = datasets.FashionMNIST('~/.pytorch/F_MNIST_data/', download=True, train=True, transform=transform)
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=64, shuffle=True)
+
+# Download and load the test data
+testset = datasets.FashionMNIST('~/.pytorch/F_MNIST_data/', download=True, train=False, transform=transform)
+testloader = torch.utils.data.DataLoader(testset, batch_size=64, shuffle=True)
+
+import torch
+from torch import nn, optim
+import torch.nn.functional as F
+
+class Classifier(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(784, 256)
+        self.fc2 = nn.Linear(256, 128)
+        self.fc3 = nn.Linear(128, 64)
+        self.fc4 = nn.Linear(64, 10)
+
+    def forward(self, x):
+        # make sure input tensor is flattened
+        x = x.view(x.shape[0], -1)
+
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = F.relu(self.fc3(x))
+        x = F.log_softmax(self.fc4(x), dim=1)
+
+        return x
+
+model = Classifier()
+
+images, labels = next(iter(testloader))
+# Get the class probabilities
+ps = torch.exp(model(images))
+# Make sure the shape is appropriate, we should get 10 class probabilities for 64 examples
+print(ps.shape)
+
+top_p, top_class = ps.topk(1, dim=1)
+# Look at the most likely classes for the first 10 examples
+print(top_class[:10,:])
+
+equals = top_class == labels.view(*top_class.shape)
+
+accuracy = torch.mean(equals.type(torch.FloatTensor))
+print(f'Accuracy: {accuracy.item()*100}%')
+
+use_cuda = True
+if use_cuda and torch.cuda.is_available():
+  model.cuda()
+print(use_cuda and torch.cuda.is_available())
+
+model = Classifier()
+criterion = nn.NLLLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+epochs = 30
+steps = 0
+a = len(trainloader)
+b = len(testloader)
+train_losses, test_losses = [], []
+for e in range(epochs):
+    running_loss = 0
+    for images, labels in trainloader:
+
+        optimizer.zero_grad()
+
+        log_ps = model(images)
+        loss = criterion(log_ps, labels)
+        loss.backward()
+        optimizer.step()
+
+        running_loss += loss.item()
+
+    else:
+        ## TODO: Implement the validation pass and print out the validation accuracy
+        test_loss,accuracy = 0,0
+        with torch.no_grad():
+            model.eval()
+            for images, labels in testloader:
+                output =  model(images)
+                test_loss += criterion(output,labels)
+
+                prob = torch.exp(output)
+                top_p, top_class = prob.topk(1, dim=1)
+
+                equals = top_class == labels.view(*top_class.shape)
+                accuracy += torch.mean(equals.type(torch.FloatTensor))
+        model.train()
+        train_losses.append(running_loss/a)
+        test_losses.append(test_loss/b)
+        print('Epoch = {}, train_loss = {:.3f}, test_loss = {:.3f}'.format(e+1, running_loss/a, test_loss/b))
+        print('Accuracy: {:.3f}'.format(accuracy/b))
+```
+
+The entire code above is the whole code for a vanilla version of Neural Network used in classifying an image from Fashion MNIST into its appropriate category. While the model above works, it has a problem of being over fitted. Below is the graph of the loss between training and validation. As we can see, the training loss constantly decreased but the validation loss did not improve. A brief background between training and validation is that they are seperate data used to guage how the model is progressing during training. To put simply in the context of overfitting, the two are separate sets of inputs. What happens essentially is that the network is overtraining on the training set (due to the repetition) and it simply memorizes the answers instead of the features. This eventually leads to poor performance or no improvement in the scores when the model is shown the different input taken from the validation set.
+
+<p align="center"><img src='.\Images\OverFit.png' width=700px></p>
+
+There is a general explanation to why overfitting happens. At first the weights of the model are randomly generated. At the first pass, here would be nodes that gets triggered so they get updated first. On the second pass, the same neurons may again get activated further increasing the bearing of their magnitude to the outcome of the network. Doing this repeatedly and those nodes that had an early start in training eventually get trained more and as a result gets more "reliable" in a sense that it contributes more to the accuracy. What happened was that the model became specialized into solving just one set of problem.
+
+To help prevent overfitting, we are introduce some randomness to our model in such a way that it discourages overtraining of nodes therefore distributing the weights through out all the possible nodes. One way this is acheived is via the *Dropout* method. The idea behind dropout is that a node will have a chance to be turned off every cycle forcing the network to compensate by updating the weights into other nodes. This way, we are theoretically distributing the weights of our network to better provide accuracy and responsiveness to a different set of inputs. This essentially prevents just some nodes to be trained repeatedly that the model discounts the other nodes' bearing in the model.
+
+To introduce dropout in torch, we simply use `nn.Dropout`.
+
+<p align="center"><img src='.\Images\Fit.png' width=700px></p>
+
+```python
+cd '/content/gdrive/My Drive/Colab Notebooks/Udacity-Pytorch_Challenge/Exercises'
+```
+
 * [x] - Tensors - The data structure of PyTorch
 * [x] - Autograd which is for calculating Gradients in NN training.
 * [x] - Training of an NN using PyTorch.
