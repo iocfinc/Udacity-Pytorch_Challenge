@@ -617,6 +617,50 @@ The code above is for warmstarting another model from a previous model's paramet
 
 In the tutorials for saving and loading there are [more options](https://pytorch.org/tutorials/beginner/saving_loading_models.html#saving-loading-model-across-devices) discussed. Since PyTorch can run on both CPU and GPU, there are methods on which the model is saved to ensure compatibility between those devices, for example saving on CPU and loading on GPU and vice versa. Those are covered in the tutorial in PyTorch.
 
+## Day 7: November 16, 2018
+
+Something is off with the dating, or is it due to the delay between ASIA times and the actual start of the program. Anyway, today is an off day, no coding or lectures done for today. I did some xml parser code for work earlier today. I have been searching in Coursera regarding a possible specialization/course in Data, Big Data and SQL. The idea is that ML and AI or DL is just a small item in the pipeline.
+
+## Day 8: November 17, 2018
+
+I will be resuming the lessons and exercises for PyTorch. After learning to save and load models earlier, we should now be ready to do transfer learning.
+
+I was searching for possible courses to take with regards to the Data-centric lean I want to go to for the next course. I saw this [Data Engineering review](http://www.tribalism.com.au/news/i-completed-data-engineering-on-google-cloud-platform-specialization-coursera-review/) for a specialization in Coursera/Google which is titled [Data Engineering on Google Cloud Platform Specialization](https://www.coursera.org/specializations/gcp-data-machine-learning). An alternate would have to be [Machine Learning with TensorFlow on Google Cloud Platform Specialization](https://www.coursera.org/specializations/machine-learning-tensorflow-gcp). Here is the [medium post](https://medium.com/google-cloud/data-engineering-on-google-cloud-platform-coursera-courses-ca24840d2a3a) from the author of the Data Engineering specialization. In terms of pricing, the fee for Coursera is a monthly 50USD which should provide access to all the Courses and Specializations on their website. That is 3000 a month which is possible for me. One thing that I want to learn from here is where does my AI-ML-DL course stand in terms of the structure of a production ready environment. What I mean is that while AI-ML-DL serves as the core differentiator, it is just a small part of the big picture. By learning Data Engineering and Machine learning on GCP, I am aiming to get a good grasp of what to expect in the prod. Most of the courses in Udacity or the tutorials on the topic already have the dataset cleaned and ready for input, in my opinion this is leading on to a false sense of security in terms of being on the actual field where the data can come from multiple streams and the data is not that clean. Also, there is a free shirt from GCP when we finish by November 30.
+
+[AWS Fundamentals](https://www.coursera.org/learn/aws-fundamentals-going-cloud-native)
+
+## Day 9: November 18, 2018
+
+Its bad but I slept in today. Starting late in Part 8 - Transfer Learning exercises.
+
+## Day 10: November 17, 2018
+
+Early start for the day. Currently doing Part 8. This is about Transfer Learning, where we load parameters of an already trained model. From those parameters, we can warmstart our model to classify our own data which would mean that we are building on top of the model that we have loaded. In the case of the exercise, we are tasked to build a Cat and Dog Classifier. But what is a notebook without a few hiccups. So first error encountered was that there was no data/file in the Folder. Checking on the address it was pointed showed that the file has not yet been downloaded, might have been fixed in the later repo updates but in my case it is not there. So going over to the Slack channel I found the link for dataset and used wget to download it to my Google Drive. The file was ~536Mb but luckily this is a cloud service so Google's connection took care of the size. The unpacking was the long part since this is a whole set.
+
+```python
+%cd <Active directory> # Make sure to change your directory first
+
+!wget https://s3.amazonaws.com/content.udacity-data.com/nd089/Cat_Dog_data.zip
+!unzip Cat_Dog_data.zip
+```
+
+Since we now have the data set downloaded, I just have to recheck the directory the loadfile is located and make sure its available After those checks we then moved through normalization. Recall from Part 7 that when loading a model, we have to match some of our parameters to the ones used in the model to be loaded. In our case we have to define the correct normalization parameters for our model as well. The different color channels for the images where normalized using different means and standard deviations.
+
+```python
+# For normalizing in our transformations
+transforms.Normalize([0.485, 0.456, 0.406],[0.229, 0.224, 0.225])
+# For the entire train_transform
+
+train.transforms = transforms.Compose([transforms.RandomRotation(30),
+                                       trasnforms.RandomResizeCrop(224),
+                                       transforms.RandomHorizontalFlip(),
+                                       transforms.ToTensor(),
+                                       transforms.Normalize([0.485,0.456,0.406],
+                                                            [0.229,0.224,0.225])])
+```
+
+In the case of our training data, we have several transforms to do. One is `RandomRotation` which will rotate to a certain degree our images. Second is we have `RandomResizeCrop` which will crop our images to a certain size while also randomly selecting which portion to crop off. We then have `RandomHorizontalFlip` which is exactly what is says in its name, flip the images in the horizontal axis. We have transform `ToTensor` which will make our array as tensors for use by pytorch. Finally, we have `Normalize` which will evaluate our tensor and match it to the normalization parameters we have set. Do note that the functions we have added to our train composition are there for the purpose of dataset augmentation. One reason for doing this is so that we can add some resiliency to our trained network. It is not always the case that an image is always centered or the image is on the correct orientation. It also happens sometimes that there are not enough samples in our data set that we have to add/augment some of it by randomly "manipulating" our original set.
+
 * [x] - Tensors - The data structure of PyTorch
 * [x] - Autograd which is for calculating Gradients in NN training.
 * [x] - Training of an NN using PyTorch.
