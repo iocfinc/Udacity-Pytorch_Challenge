@@ -1,16 +1,16 @@
-# Pytorch Challenge Logs
+# PyTorch Challenge Logs
 
 ## Day 1: November 10, 2018
 
-Official start of the challenge. Mostly doing some readings on what the challenge format would be. There would be an intro to pytorch. Then there would be the usual, CNNs and RNNs for DL with PyTorch as the framework. Finally, for the final project (which would be the basis of the course) we would be using transfer learning to come up with an image detection and classifier for flowers (orchids by the looks of it).
+Official start of the challenge. Mostly doing some readings on what the challenge format would be. There would be an intro to PyTorch. Then there would be the usual, CNNs and RNNs for DL with PyTorch as the framework. Finally, for the final project (which would be the basis of the course) we would be using transfer learning to come up with an image detection and classifier for flowers (orchids by the looks of it).
 
 ## Day 2: November 11, 2018
 
-So today, I have started on the initialization for the challenge. For one, I have joined the [Slack Channel](https://pytorchfbchallenge.slack.com/messages/CDB3N8Q7J/convo/CDB3N8Q7J-1541904940.926900/), its already active and there are already some questions posted. For now I think I can help since I have some experience in the Deep Learning Nanodegree. Also, I have installed pytorch and torchvision as pre-requisites to the course.
+So today, I have started on the initialization for the challenge. For one, I have joined the [Slack Channel](https://pytorchfbchallenge.slack.com/messages/CDB3N8Q7J/convo/CDB3N8Q7J-1541904940.926900/), its already active and there are already some questions posted. For now I think I can help since I have some experience in the Deep Learning Nanodegree. Also, I have installed PyTorch and torchvision as pre-requisites to the course.
 
 Right now I am watching the interview with Soumith Chintala, one of the creators of PyTorch, regarding the history and uniqueness of PyTorch from other frameworks. For one thing, its approach was Python first meaning that the python ways we already now and want are applied to the system. It also has a JIT compiler which bridges the known Deep learning frameworks, caffe, tensorflow, torch, etc.,to be able to convert from one framework to another and also to a deployment ready C code for production. In terms of additional features, the PyTorch team is looking into support for Google Colab (for the free GPUs), more interactive notebooks for trainings and examples and also the use of tensorboard for PyTorch.
 
-Right now its 2:23 PM, I have to pause for this session. I have watched the introduction as well as the introduction to pytorch videos so those are done. I have to do other things for next week but I'll be back probably later tonight. Objective for today is to consume the next lesson which is the Introduction to Pytorch (coding) by Mat Leonard (?).
+Right now its 2:23 PM, I have to pause for this session. I have watched the introduction as well as the introduction to PyTorch videos so those are done. I have to do other things for next week but I'll be back probably later tonight. Objective for today is to consume the next lesson which is the Introduction to PyTorch (coding) by Mat Leonard (?).
 
 So now, its 9:00PM. Back at it again. For now the idea is to setup Colab for the notebooks. I found [Colab](https://Colab.research.google.com/notebooks/welcome.ipynb#recent=true) and it looks like there is an option for the use of a repository in GitHub. Seems easy. So for now, I'll move over through the Introduction lessons and see what the first lab would be.
 
@@ -21,7 +21,7 @@ So what to expect:
 * [ ] - Training of an NN using PyTorch.
 * [ ] - Use of PyTorch for Transfer Learning for image detection.
 
-So first up was tensors in PyTorch. I thought tensors was some sort of proprietary naming of PyTorch, it was not. Its basically referring to the unit of tensor. So after that we went on to discuss `torch.mm` which is the matrix multiplication equivalent of `np.matmul` in torch. Also there is `torch.sum` which can also be called as a method `.sum()` which obviously sums up the values inside it. One important piece of information that was given in the introduction was the use of memory between numpy and torch. Obviously, pytorch will have compatibility with numpy so anything (an array for example) defined in numpy can be ported to torch via `torch.from_numpy` and vice versa via `.numpy`. In these operations, the memory used for the array are one and the same. Meaning that an operation done in an array that was ported to torch will also be reflected in the version of numpy since they are at the same memory. Also, the transpose operation `.T` is not used in torch. Instead, to match the dimensions of matrix multiplication, we are advised to use `.reshape(a,b)`, `.resize(a,b)` or `.view(a,b)` operation. It is highly advised to make use of `.view(a,b)` than the other two as they do have some issues according to Mat Leonard.
+So first up was tensors in PyTorch. I thought tensors was some sort of proprietary naming of PyTorch, it was not. Its basically referring to the unit of tensor. So after that we went on to discuss `torch.mm` which is the matrix multiplication equivalent of `np.matmul` in torch. Also there is `torch.sum` which can also be called as a method `.sum()` which obviously sums up the values inside it. One important piece of information that was given in the introduction was the use of memory between numpy and torch. Obviously, PyTorch will have compatibility with numpy so anything (an array for example) defined in numpy can be ported to torch via `torch.from_numpy` and vice versa via `.numpy`. In these operations, the memory used for the array are one and the same. Meaning that an operation done in an array that was ported to torch will also be reflected in the version of numpy since they are at the same memory. Also, the transpose operation `.T` is not used in torch. Instead, to match the dimensions of matrix multiplication, we are advised to use `.reshape(a,b)`, `.resize(a,b)` or `.view(a,b)` operation. It is highly advised to make use of `.view(a,b)` than the other two as they do have some issues according to Mat Leonard.
 
 So here is an interesting trick for Colab and Google Drive mount. This should help in uploading those modules or python scripts like unit tests and others to your notebook. It will allow you to read from your google drive input files and others as well. A useful tip, you can run bash commands directly in the notebook via `!` command so `!ls` should output the list of files in your current drive. Which is neat.
 
@@ -48,7 +48,7 @@ vcode = getpass.getpass()
 
 Connected with some of my classmates in the Udacity PyTorch Scholarship challenge. Interesting to see some diverse background. I have my blockmate in the challenge as well. I connected with someone from the Network Security field trying to apply Deep learning to his field. I have a Process Engineer with a hobby for AI-DL-ML. I also connected with a Machine Learning Lead from exepedia/hotels.com. Its quite a community we have in the challenge.
 
-Right now I am doing the exercises for the introduction to pytorch module.
+Right now I am doing the exercises for the introduction to PyTorch module.
 
 ```python
 from torch import nn
@@ -56,23 +56,23 @@ from torch import nn
 class Network(nn.Module):
     def __init__(self):
         super().__init__()
-        
+
         # Inputs to hidden layer linear transformation
         self.hidden = nn.Linear(784, 256)
         # Output layer, 10 units - one for each digit
         self.output = nn.Linear(256, 10)
-        
-        # Define sigmoid activation and softmax output 
+
+        # Define sigmoid activation and softmax output
         self.sigmoid = nn.Sigmoid()
         self.softmax = nn.Softmax(dim=1)
-        
+
     def forward(self, x):
         # Pass the input tensor through each of our operations
         x = self.hidden(x)
         x = self.sigmoid(x)
         x = self.output(x)
         x = self.softmax(x)
-        
+
         return x
 
 model = Network()
@@ -122,7 +122,7 @@ So that portion above was all about setting up a neural network in PyTorch. We s
 
 ## Day 4: November 13, 2018
 
-Now on exercise number 3 of 8: Training Neural Networks. First off [here](https://pytorch.org/docs/stable/index.html) is the link for the documentation of PyTorch. It comes in handy in getting a deeper understanding of what is being discussed in the notebooks. It has more explanation on the process of [autograd](https://pytorch.org/docs/stable/notes/autograd.html#how-autograd-encodes-the-history). I was reading about the autograd feature and its quite intuitive actually and it is what allows PyTorch to be faster, especially in distributed computation (GPU/CUDA). Its whats going to allow computation of gradients during every pass, which in turn would allow us to manually set a layer to not update (for example, transfer learning).
+Now on exercise number 3 of 8: Training Neural Networks. First off [here](https://PyTorch.org/docs/stable/index.html) is the link for the documentation of PyTorch. It comes in handy in getting a deeper understanding of what is being discussed in the notebooks. It has more explanation on the process of [autograd](https://pytorch.org/docs/stable/notes/autograd.html#how-autograd-encodes-the-history). I was reading about the autograd feature and its quite intuitive actually and it is what allows * to be faster, especially in distributed computation (GPU/CUDA). Its whats going to allow computation of gradients during every pass, which in turn would allow us to manually set a layer to not update (for example, transfer learning).
 
 After autograd we move into [Broadcasting semantics](https://pytorch.org/docs/stable/notes/broadcasting.html) for PyTorch. Apparently, its an inheritance of the NumPy broadcasting semantics. It is solving or pointing out dimensionality match or mismatches when we operate tensors (which we will as we progress). One possible way to reduce this error/complication is to understand the basics of Matrix Multiplication, mostly that it is not commutative (orders matter especially in determining the shape of the output).
 
@@ -262,6 +262,7 @@ if not os.path.isfile('helper.py'):
 ```
 
 Use the code below to install PyTorch, alternatively just use code snippets.
+
 ```python
 #NOTE: Use the code below to install PyTorch in Colab
 # http://pytorch.org/
@@ -350,6 +351,7 @@ I was working on figuring out how to clone a GitHub repository to my Google Driv
 !pwd
 # use the git clone command to copy the clone to the virtual environment
 %git clone <GitHub repo url>
+
 ```
 
 Once the repository has been cloned, it should appear now as a folder in your drive. This would allow you to open/edit/save the notebooks via colaboratory. Do note that there is a limit to the free size of Google Drive which is 15Gb. 
@@ -598,7 +600,7 @@ loss = checkpoint['loss']
 <Additional arguments/variables>
 
 model.eval()
-# or 
+# or
 model.train()
 ```
 
@@ -661,8 +663,195 @@ train.transforms = transforms.Compose([transforms.RandomRotation(30),
 
 In the case of our training data, we have several transforms to do. One is `RandomRotation` which will rotate to a certain degree our images. Second is we have `RandomResizeCrop` which will crop our images to a certain size while also randomly selecting which portion to crop off. We then have `RandomHorizontalFlip` which is exactly what is says in its name, flip the images in the horizontal axis. We have transform `ToTensor` which will make our array as tensors for use by pytorch. Finally, we have `Normalize` which will evaluate our tensor and match it to the normalization parameters we have set. Do note that the functions we have added to our train composition are there for the purpose of dataset augmentation. One reason for doing this is so that we can add some resiliency to our trained network. It is not always the case that an image is always centered or the image is on the correct orientation. It also happens sometimes that there are not enough samples in our data set that we have to add/augment some of it by randomly "manipulating" our original set.
 
+## Day 11: November 18, 2018
+
+No other progress done yesterday. The connection is unstable that the session with Google Colab constantly gets disconnected. So I just went on to read Thinking Fast and Slow. Its unrelated to the topic but it does have its application.
+
+What? A user has already started figuring out the lab project? Josh Bernhard had [this medium post](https://medium.com/@josh_2774/deep-learning-with-pytorch-9574e74d17ad) detailing his project. Its a 20 minute read so I expect it to be bloody.
+
+Anyway back to Part 8 of the PyTorch intro. Its funny when you notice that you are doing something wrong 2 hours into doing it. Talk about a waste of time. I was actually training my loaded model in CPU. No wonder it was taking too long.
+
+```python
+model = models.densenet121(Pretrained=True)
+model
+```
+
+The code above is what we are using to load out a model that is already available in PyTorch. For more models we can refer to this [link] to the PyTorch model zoo. In Udacity's example, they are loading up the densenet121 model. Looking at the zoo, PyTorch has selections that include ResNet, Densenet, VGG, Inception and SqueezeNet with varying depth. I took a screen shot of the results for the networks.
+
+<p align="center"><img src='.\Images\torchvision.models — PyTorch master documentation.png' width=450px></p>
+
+Now that we have loaded up our model, we need to freeze our model's parameters. Specifically, we set our `requires_grad` flag to `False`. This is done because we want to use the pre-trained parameters of our model and build on top of it. We do not want to, at least for the sake of the example, train the weights. We take note that we are using the model to get the features from our image inputs. The model is not yet complete in a sense that it is not yet able to map out the features to the correct label. It still does not have the classifier portion. So we add a few layers at the output of the model we loaded. Some key points to look at here is that the input size of the classifier should be equal to the output of the last layer of the model, in this case 1024 for DenseNet151.
+
+```python
+# Freeze parameters so we don't backprop through them
+for param in model.parameters():
+    param.requires_grad = False
+
+from collections import OrderedDict
+classifier = nn.Sequential(OrderedDict([
+                          ('fc1', nn.Linear(1024, 500)),
+                          ('relu', nn.ReLU()),
+                          ('fc2', nn.Linear(500, 2)),
+                          ('output', nn.LogSoftmax(dim=1))
+                          ]))
+
+model.classifier = classifier
+```
+
+Once we have loaded the model, we can already proceed with using it to classify our images. A very important discussion should be in clearing up what happens next and why Deep Learning (especially CNNs) are so difficult to get into. It does not mean that since we are not training, we can get away without the use of a GPU. Our images still have to pass through the model. Seeing DenseNet151's depth should already give us an idea of just how much computation is required for us to be able to get a result. This is where the use of the Cuda cores in GPU or in the case of TensorFlow, TPUs, come in handy. At our scale, several sample images of cats and dogs, we can still get away with using the free GPU in the Google Colab cloud. Introducing ML-AI-DL to a production environment with multiple sources of data, or building a model to classify images requires some serious compute power. Right now this is an important distinction to be pointed out. There is a gap in what we do here in our lab and what really happens out there in production. Just something to think about.
+
+Now that we are clear that we *NEED* to use GPUs, we do some modifications to our code to allow us the use of CUDA. First we need to `import time` so that we can monitor the baseline of how much improvement we have. Then we make a check between the run times in CPU and CUDA devices. To tell PyTorch which device to load the model, we simply call the `.to(<device>)` to our model. In this case its `model.to(<['cpu','gpu']>)`. Do note that when we get new tensors in our computation, we also have to  tell them which device they are to be processed. So we need our `inputs` and `labels` to be processed in the device we are on.
+
+```python
+import time
+
+for device in ['cpu','cuda']:
+    criterion = nn.NLLLosss()  # Used since we are using softmax in our final output
+    optimizer = optim.Adam(model.classifier.parameters(),lr=0.001)
+    model.to(device) # Tell PyTorch which device to use, CPU or GPU
+    for ii, inputs, labels in enumerate(trainloader):
+        inputs, labels = inputs.to(device), labels.to(device)
+
+        start = time.time()  # Record the start time for computation
+
+        outputs = model.forward(inputs)
+        loss = criterion(outputs,labels)
+        loss.backward()
+        optimizer.step()
+
+        if ii==3:  # In here we simply define our batch size as 3
+            break
+    print(f"Device: {device}; Time per Batch: {(time.time()-start)/3:.3f} seconds")
+```
+
+The results are night and day. Using cuda device allows us to compute a batch faster. The reason for this is how computations are made in Deep Learning. Gradients are based on Matrix Operations and each matrix operation can be done in parallel with each other. The bigger the model is, the more gradients it has to compute. The difference between CPU and GPU is that GPU is made for computing small items in parallel while the CPU is designed to take on more intensive computations in sequence. My guess is that throughput is better in our case that speed.
+
+<p align="center"><img src='.\Images\GPU-Vs-CPU.png' height=100px></p>
+
+```python
+# Checker of CUDA or CPU device
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+print(device)
+```
+
+The code above is a boiler plate for checking if there is a cuda device available in our instance and select it if available, otherwise it would simply default to the CPU.
+
+```python
+# NOTE: This is a copy of the bottom portion of DenseNet121
+
+      (denselayer15): _DenseLayer(
+        (norm1): BatchNorm2d(960, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu1): ReLU(inplace)
+        (conv1): Conv2d(960, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (norm2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu2): ReLU(inplace)
+        (conv2): Conv2d(128, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      )
+      (denselayer16): _DenseLayer(
+        (norm1): BatchNorm2d(992, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu1): ReLU(inplace)
+        (conv1): Conv2d(992, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (norm2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (relu2): ReLU(inplace)
+        (conv2): Conv2d(128, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      )
+    )
+    (norm5): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  )
+  (classifier): Linear(in_features=1024, out_features=1000, bias=True)
+)
+```
+
+The code above shows the last layers of DenseNet121 which we will be loading. What we are looking for is the `classifier` layer, specifically the input to that layer. What we will be doing is changing that layer to a sequential one. In this case we have an input of 1024, and we will need to output 2 (cat or dog). The 1000 `out_features` in the model is due to the original data it was trained on which is ImageNet which is a collection of images from 1000 labels ranging from animals like cats and dogs to other things like cars, airplanes etc.
+
+Now that we have an idea of the `in_features` we can recreate the classifier to make it more suitable to our application.
+
+```python
+# TODO: Freeze the parameters
+
+from parameters in model.parameters():
+    prameters.requires_grad = False
+
+classifier = nn.Sequential(nn.Linear(1024,500),
+                            nn.Dropout(0.15),
+                            nn.Linear(250,2),
+                            nn.Dropout(0.15),
+                            nn.Linear(259,2),
+                            nn.LogSoftmax(dim=1)
+                            )
+model.classifier = classifier
+criterion = nn.NLLLoss
+optimizer = optim.Adam(model.classifier.parameters(),lr=0.0025)
+model.to(device)
+```
+
+Now that we have modified the classifier layer, we can start passing though our inputs and check our model's accuracy.
+
+```python
+epochs = 1 # We just want to check the results, we do not want to train the model.
+
+# Initialization
+steps = 0
+running_loss = 0 
+print_every = 5  # Let's minimize the outputs
+
+for epoch in range(epochs): # Just one pass
+  for inputs,labels in trainloader:
+    steps+=1  # Increment the step
+    inputs, labels = inputs.to(device), labels.to(device) # Pass the inputs to device first for use of Cuda cores.
+    #Boiler plate
+    optimizer.zero_grad() # Zero out our gradients
+    out = model.forward(inputs)
+    loss =  criterion(out,labels)
+    loss.backward()
+    optimizer.step()
+    running_loss +=loss.item()
+
+    if steps % print_every ==0:
+      # Initializations for test
+      test_loss=0
+      accuracy = 0
+      model.eval()
+      with torch.no_grad():
+        for inputs, labels in testloader:
+          inputs, labels = inputs.to(device), labels.to(device) # Pass the inputs to device first for use of Cuda cores.
+          output = model.forward(inputs)
+          batch_loss =  criterion(output,labels)
+          test_loss +=batch_loss.item()
+          # NOTE: No auto-grad zeroing in testing since we are not going to call model.eval()
+
+          # Accuracy of the model
+          # Another boiler plate if your think of it
+          ps = torch.exp(out)
+          top_p, top_class = ps.topk(1,dim=1)
+          equals = top_class == labels.view(*top_class.shape)
+          accuracy += torch.mean(equals.type(torch.FloatTensor)).item()
+
+      print(f"Epoch {epoch+1}/{epochs}..."
+            f"Train Loss: {running_loss/print_every:.3f}..."
+            f"Test Loss: {test_loss/len(testloader):.3f}..."
+            f"Accuracy: {accuracy/len(testloader):.3f}"
+           )
+      running_loss=0
+      model.train()
+```
+
 * [x] - Tensors - The data structure of PyTorch
 * [x] - Autograd which is for calculating Gradients in NN training.
 * [x] - Training of an NN using PyTorch.
-* [ ] - Use of PyTorch for Transfer Learning for image detection.
-* [x] - Figure out using Colab for the challenge. There is a GPU and TPU service on the cloud. :joy:
+* [x] - Use of PyTorch for Transfer Learning for image detection.
+* [x] - Figure out using Colab for the challenge. There is a GPU and TPU service on the cloud. :muscle:
+
+We have just finished the Introduction To PyTorch module of the challenge. We have learned about autograd and tensors and we have used `torch.nn` to create our models. We also were able to save and load our models in PyTorch. Finally, we were able to use transfer learning to make use of existing pre-trained models and modifying them to our application.
+
+Up next would be another discussion on Convolutional Neural Networks. This is going to be the project we need to submit for consideration to the scholarship so we need to listen and take notes well.
+
+:+1: Break for now and will resume learning later.
+
+### Pipeline ideas and reading materials
+
+:bomb: [Deep Learning with Pytorch](https://medium.com/@josh_2774/deep-learning-with-pytorch-9574e74d17ad), a medium post from Josh Bernhard detailing the flow of the final Project.
+:bulb: Anomaly detector in sequences (First is text, then images)
+:clipboard: How do we publish our weights into production? Like the auto-assign, or anomaly detector. Worth figuring out. [LINK](https://medium.freecodecamp.org/a-beginners-guide-to-training-and-deploying-machine-learning-models-using-python-48a313502e5a), for deploying the model via Flask.
+:hocho: [Deploying ML Models](https://towardsdatascience.com/deploying-deep-learning-models-part-1-an-overview-77b4d01dd6f7). From what I initially read, its possible via Kubernetes.
+:bulb: SQL/noSQL for Database management and data wrangling.
