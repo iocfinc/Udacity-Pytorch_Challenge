@@ -635,7 +635,7 @@ I was searching for possible courses to take with regards to the Data-centric le
 
 Its bad but I slept in today. Starting late in Part 8 - Transfer Learning exercises.
 
-## Day 10: November 17, 2018
+## Day 10: November 19, 2018
 
 Early start for the day. Currently doing Part 8. This is about Transfer Learning, where we load parameters of an already trained model. From those parameters, we can warmstart our model to classify our own data which would mean that we are building on top of the model that we have loaded. In the case of the exercise, we are tasked to build a Cat and Dog Classifier. But what is a notebook without a few hiccups. So first error encountered was that there was no data/file in the Folder. Checking on the address it was pointed showed that the file has not yet been downloaded, might have been fixed in the later repo updates but in my case it is not there. So going over to the Slack channel I found the link for dataset and used wget to download it to my Google Drive. The file was ~536Mb but luckily this is a cloud service so Google's connection took care of the size. The unpacking was the long part since this is a whole set.
 
@@ -663,7 +663,7 @@ train.transforms = transforms.Compose([transforms.RandomRotation(30),
 
 In the case of our training data, we have several transforms to do. One is `RandomRotation` which will rotate to a certain degree our images. Second is we have `RandomResizeCrop` which will crop our images to a certain size while also randomly selecting which portion to crop off. We then have `RandomHorizontalFlip` which is exactly what is says in its name, flip the images in the horizontal axis. We have transform `ToTensor` which will make our array as tensors for use by pytorch. Finally, we have `Normalize` which will evaluate our tensor and match it to the normalization parameters we have set. Do note that the functions we have added to our train composition are there for the purpose of dataset augmentation. One reason for doing this is so that we can add some resiliency to our trained network. It is not always the case that an image is always centered or the image is on the correct orientation. It also happens sometimes that there are not enough samples in our data set that we have to add/augment some of it by randomly "manipulating" our original set.
 
-## Day 11: November 18, 2018
+## Day 11: November 20, 2018
 
 No other progress done yesterday. The connection is unstable that the session with Google Colab constantly gets disconnected. So I just went on to read Thinking Fast and Slow. Its unrelated to the topic but it does have its application.
 
@@ -846,12 +846,93 @@ We have just finished the Introduction To PyTorch module of the challenge. We ha
 
 Up next would be another discussion on Convolutional Neural Networks. This is going to be the project we need to submit for consideration to the scholarship so we need to listen and take notes well.
 
-:+1: Break for now and will resume learning later.
+With regards to the error, I think it has something to do with defining the classifier or the linking between Resnet that I was trying. I was searching and found this peice of code `test_embeds = Variable(torch,randn(5. 10), requires_grad=True)` which could be worth a try.
+
+## Day 12: November 21, 2018
+
+A bit of a redo of transfer learning for PyTorch. It is very important that I grasp how to do it. What I am doing is using transfer learning again but this time I am loading up Resnet101 instead of DenseNet121 which was used in the example.
+
+Here is a [tutorial](https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html) from the PyTorch site. It is taking on FineTuning where we further train the loaded model to our inputs and also Fixed Feature Extraction where we simply build on top of it.
+
+In the tutorials I learned about the autograd functionality of PyTorch. When using a model, recall that we use:
+
+```python
+for param in models.parameters():
+    param.requires_grad = False
+```
+
+We know that this is for freezing up the gradients of the models. I just learned that this is actually only used in Feature Extraction uses of transfer learning. So why is it then that we freeze the gradients when we are going to add our classifier network later? This is answered by the unique default setting of autograd. Newly created modules, even on a model that has frozen gradients, will have their `requires_grad` flag set to True. This is why we can still train our classifier even with the original model's parameters frozen. I think this is similar to the setting in TensorFlow of `is_training`. I know there is an option in TensorFlow to stop updates to the pre-trained model as well selectively choose which layers to freeze.
+
+Now back to transfer learning, I figured out how to add (correctly) to the model's classifier. Its not simply creating a sequential module and calling it classifier. We actually have to take a look at the last layer of the loaded model and link our sequential model to that one.
+
+```python
+# TODO: Insert the sequential model here for Feature Extraction
+
+```
+
+I have a problem. I am now lost at what loss model to use. I am trying to use `NLLLoss` for the model as it has a `LogSoftmax` activation for probability in the final layer but I am getting only 60% accuracy. I think I made an error in choosing the criterion. I have to fix this. :confused:
+
+Okay, since I need some refresher for the loss functions and optimizations I checked and found this [article in Medium](https://medium.com/data-science-group-iitr/loss-functions-and-optimization-algorithms-demystified-bb92daff331c) detailing the loss functions and optimizations demystified.
+
+First up is *Error and Loss functions*. In most networks, error is simply the difference between the computed value and the actual value. The function on which the error is computed is called the **loss function**. Different loss functions will have different effects on the performance of the model. The use of loss function is generally dictated by the type of task that the model is used for (regression or classification).
+
+Once we are able to calculate our error via our loss function, we have to update our weights so that the error we get is minimized. This is where our **optimization function** comes in. Optimization functions usually calculate the gradients, which are the partial derivative of the loss function w.r.t. the weights, usually to the opposite direction of the gradient(thus gradient descent).
+
+>> The components of a neural network, the activation function, loss function and optimization algorithm used, play an important role in efficiently calculating and effective training of a model to provide accurate results. Different tasks require a different set of functions to give the optimum results.
+
+Loss functions as stated earlier are used for different tasks. Mainly we have **Regressive Loss functions** where we are predicting a target variable which is continuous. Examples of regressive loss functions are *Mean Squared Error (MSE)*, *Absolute Error* and *Smooth Absolute Error*. Next up would be **Classification Loss functions** where our target is a probability value (score). The target variable is usually binary (True/False), (Cat/Dog), (Ant/Bee) etc. or it can be multi-class. In terms of loss, what it computed is usually the *margin*, which is the measure of how correct we are and how confident our predictions are. Most classification loss would aim to maximize margin. Examples of this would be *Binary Cross Entropy*, *Negative Log Likelihood*, *Margin Classifier* and *Soft Margin Classifier*. Then we have **Embedding Loss functions** which is a measure of similarity between two inputs. Examples of this would be *L1 Hinge Error* that calculates the distance L1 between the two inputs and *Cosine Error* which calculates the Cosine distance between the inputs.
+
+Once we have a loss function we can then proceed with how we minimize losses and optimize our model. This is where optimization comes in. *Optimization functions* dictate how our model gets trained and how fast our convergence would be (minimized/high accuracy model). Some examples of this would be *Adam*, *Stochastic Gradient Descent(SGD)* and *Adagrad*. Most of these are usually a matter of convergence and speed. My main issue right now is to first fix the loss functions so that the optimization can do its part.
+
+In the tutorial example, he gave us the loss function as `CrossEntropyLoss()`. I am not sure if its the same as *Categorical Cross Entropy* but it makes sense that it is entropy based since this is a classification problem. What I am not sure of is why it does not seem to work when I use two linear layers. Also, he is using `SGD` for the optimization while I use `Adam`. In terms of learning, Adam does work in a sense that the accuracy increases. The issue I have is that 
+the loss and accuracy are just in the 50-60% range.:disappointed:
+
+```python
+model_ft = models.resnet18(pretrained=True)
+num_ftrs = model_ft.fc.in_features
+model_ft.fc = nn.Linear(num_ftrs, 2)
+
+model_ft = model_ft.to(device)
+
+criterion = nn.CrossEntropyLoss()
+
+# Observe that all parameters are being optimized
+optimizer_ft = optim.SGD(model_ft.parameters(), lr=0.001, momentum=0.9)
+
+# Decay LR by a factor of 0.1 every 7 epochs
+exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
+```
+
+There is still another [tutorial for finetuning](https://pytorch.org/tutorials/beginner/finetuning_torchvision_models_tutorial.html) which could also provide other answers on the question of the low accuracy. It could just be a really big jump of nodes or there really is a need to add another hidden and that we can simply go from 2048 to 2 directly. :unamused:
+
+More time to do this later and tomorrow but this is very important since this is the basis of getting accepted or not to the scholarship.
+
+Another worthy read would be [Dealing with datasets imbalance](https://towardsdatascience.com/handling-imbalanced-datasets-in-deep-learning-f48407a0e758). Based on the Lab Challenge channel in slack, there is already a discussion on how the dataset is unbalanced. To provide an edge on competitive challenges (like this scholarship) I found a [post on staying on the top 2% of a Kaggle Competition](https://towardsdatascience.com/my-secret-sauce-to-be-in-top-2-of-a-kaggle-competition-57cff0677d3c?source=placement_card_footer_grid---------2-41). We have our plate full of learnings and task. :muscle:
+
+## Day 13: November 22, 2018
+
+Transfer learning fixing classification loss function.
+
+Consumed by work today. :warning:
+
+Made no progress except for reading some medium posts on Loss functions.
+
+## Day 14: November 23, 2018
+
+Another day. Would be trying to catch up today on the lessons. I am now on Convolutional Neural Networks. The instructor is Alex Cook together with another one (I have not yet seen her and know her name).
+
+First of is *Features*. In the context of CNNs they are actually used to find features in the image and from those features provide information or prediction as to what the image is. Features are usually specific for every CNN node, for example one node might be looking for edges and another one is looking for borders and another one is looking for a shade. Combining these features will allow the network to provide a classification as to what it is actually looking at or the input. Another way to thinking about it is about how we humans see an image and classify it. In our case we are able to more specifically check what features to look at. For example we look at the face of a person and check its size, the color, the eyes, the nose, the eyebrows, if there is a mole somewhere. Obviously, for us humans, its almost trivial but that is actually how it is logically how it works if we break it down. Its just "human nature" so we tend to overlook it.
 
 ### Pipeline ideas and reading materials
 
 :bomb: [Deep Learning with Pytorch](https://medium.com/@josh_2774/deep-learning-with-pytorch-9574e74d17ad), a medium post from Josh Bernhard detailing the flow of the final Project.
+
 :bulb: Anomaly detector in sequences (First is text, then images)
+
 :clipboard: How do we publish our weights into production? Like the auto-assign, or anomaly detector. Worth figuring out. [LINK](https://medium.freecodecamp.org/a-beginners-guide-to-training-and-deploying-machine-learning-models-using-python-48a313502e5a), for deploying the model via Flask.
+
 :hocho: [Deploying ML Models](https://towardsdatascience.com/deploying-deep-learning-models-part-1-an-overview-77b4d01dd6f7). From what I initially read, its possible via Kubernetes.
+
 :bulb: SQL/noSQL for Database management and data wrangling.
+
+:hocho: There are a lot of examples/tutorials in PyTorch website  for projects.
