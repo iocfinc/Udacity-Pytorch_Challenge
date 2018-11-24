@@ -923,6 +923,196 @@ Another day. Would be trying to catch up today on the lessons. I am now on Convo
 
 First of is *Features*. In the context of CNNs they are actually used to find features in the image and from those features provide information or prediction as to what the image is. Features are usually specific for every CNN node, for example one node might be looking for edges and another one is looking for borders and another one is looking for a shade. Combining these features will allow the network to provide a classification as to what it is actually looking at or the input. Another way to thinking about it is about how we humans see an image and classify it. In our case we are able to more specifically check what features to look at. For example we look at the face of a person and check its size, the color, the eyes, the nose, the eyebrows, if there is a mole somewhere. Obviously, for us humans, its almost trivial but that is actually how it is logically how it works if we break it down. Its just "human nature" so we tend to overlook it.
 
+## Day 15: November 24, 2018
+
+Continuing on Convolutional Neural Networks today. Aside from looking at how CNN works, we again retouch on the use of a validation set. Generally, a validation set serves two purpose:
+
+* Measure how well the model is generalizing, during training - It will show us how our model at a certain epoch comes performs to a data that it was not trained on. This would indicate that our model has been able to focus on getting features that matter and classify inputs according to these features.
+
+* Validation loss will also tell us when to stop training the model - Building up on the first purpose of a validation loss, we would want to be able to know when our model is generalizing and at what point is it simply memorizing details from the data. When our validation loss stops improving, or when it starts to increase then we know that the training of our model has to stop. This is because we have indication that the model is simply memorizing the training data, causing it to have a bad performance when used on a validation data set.
+
+Why use CNN instead of MLP? Especially images, CNN would retain the spatial features of the image which cannot be done by MLPs. When talking about detecting features, this is done by applying various filters to an image. These filters are made in such a way that they are able to detect spatial features in the image. When we say *spatial features* we are talking about either *color* or *shapes*. We will mostly deal with *shapes* in image detection. *Shapes* can be thought of as intensity changes, or edges. When we look at something with our eyes, the first thing we look out for is the shape or the overall outline. The same thing is true when we want to look at an image. We first need to know if there is actually a shape in the input image. To do this, we need to have a filter that can detect abrupt changes in intensity which usually indicates an edge. Pass a filter to an image that detects an edge as it convolves and you get to see an outline of the shape. To detect an intensity in an image, we will be creating a specific image filter that looks at a certain group of pixels(filter size) and react to alternating patterns of dark/light pixels (edges). The output of moving around this filter to the entire image is a new image that shows edges of objects and differing textures.
+
+<p align="center"><img src='.\Images\screen-shot-2018-09-24-at-3.18.33-pm.png' height=400px></p>
+
+We are introduced to the concept of frequency in an image. Frequency is just the number of oscillations per unit time of an object. So basically its simply *rate of change*. In the context of an image, frequency is actually the rate of change of intensity for a given area/space. What are the implications of frequency of an image? For us in image detection, its about determining the edges of an object in the image and determining if its a shape or if its a background. In the example above, the blue box shows an area with low frequency. This area of low frequency generally have low variations between pixel values suggesting uniformity and lack of edges. The pink box on the other hand is showing an area of high frequency. The intensity changes between the black and white pixels are discernable. This suggest the presence of edges and possibly shapes in that are which in this case indicates stripes in the area.
+
+Now that we have the idea of the frequency in the image, we move on to the concept of *High-pass filters* in the context of convolution. We generally use High-pass filters because we have learned earlier that the rapid changes in image frequency indicates an edge. From this we create a *Kernel* which serves as the weight on which our image is convolved. We go over the entire image using our kernel and from the convolutions we get a new (processed) value which reflects the result of the convolution of the kernel and the input. In this specific case, we should see an image with the outline of the object in the input image being highlighted.
+
+How do we actually handle edges using kernels? The answer is in creating a kernel with the focus on the center and looking at the neighboring pixels. One important concept in edge detection kernels is that the sum of the elements inside the kernel is 0. This is done because we just want the edges to be detected. Having a sum (bias) of any other number is no longer an edge detection kernel. It is also important how the element values are distributed. Usually, the center element in the 3x3 kernel holds a high value (the focus point). Then the adjacent elements of the center pixel all have a value that when added would be equal to the negative of the value in the center element. For example, the center element is valued 4. This would make the adjacent elements (above, below, left and right) of the center pixel have a value of (-4)/4 or -1. The elements diagonal to the center pixel are usually left at zero as they are the farthest and contribute the least to the edge so it is generally not considered (i.e. element value is multiplied by 0).
+
+How do we deal with the edges of the input (pun intended)? What we are trying to discuss is how do we fit the kernel at the borders of the input image. The kernel is made in a way that the focus pixel is at the central element. So pixels at the edges of the input images will not have a convolution output. To deal with this, we use the concept of padding. This is where the input images are generally padded with zeros so that the kernel will still get applied and the shape of the output will retain the shape of the input while also allowing the convolution to happen. An alternative to padding would have to be cropping the image. This would make the output image a different size to that of the input and that would lead to some pixels not being processed and that constitutes a loss of data/detail which we obviously want to avoid.
+
+Below is an example of how a kernel can be applied to an image with the use of OpenCV library. Here we want to show how images are transformed via the use of a filter we have set.
+
+```python
+# Using OpenCV to apply filters
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+
+import cv2
+import numpy as np
+
+%matplotlib inline
+
+# Read in the image
+image = mpimg.imread('images/curved_lane.jpg')
+image_2 = mpimg.imread('images/bridge_trees_example.jpg')
+
+plt.imshow(image)
+```
+
+So the output of the code block above would be the image below which just shows the original image we use as input.
+
+<p align="center"><img src='.\Images\curved_road-input.png' height=300px></p>
+
+```python
+# Converting to Grayscale
+gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+
+plt.imshow(gray, cmap='gray')
+```
+
+After importing the image, we usually split it up into its corresponding channels (R,G,B) or in this case convert it to a single channel via gray scaling.
+
+<p align="center"><img src='.\Images\image_grayscaled.png' height=300px></p>
+
+```python
+# Creating a custom Kernel
+# Create a custom kernel
+
+# 3x3 array for edge detection
+sobel_y = np.array([[ -1, -2, -1], 
+                   [ 0, 0, 0], 
+                   [ 1, 2, 1]])
+
+## TODO: Create and apply a Sobel x operator
+
+
+# Filter the image using filter2D, which has inputs: (grayscale image, bit-depth, kernel)  
+filtered_image_y = cv2.filter2D(gray, -1, sobel_y)
+
+plt.imshow(filtered_image_y, cmap='gray')
+
+```
+
+In the code above the kernel we have defined is in the numpy array named `sobel_y`. What this kernel would do is detect changes on the horizontal edges. The resulting image shows an outline of the detected edges. We can see that it was able to detect high contrasting boundaries like the lane markings and the edge of the concrete barrier in the curve. This should give us an idea of how else we can make use of convolution and kernels  in detecting other features in the image.
+
+<p align="center"><img src='.\Images\image_filtered.png' height=300px></p>
+
+The importance of filters cannot underestimated especially in the application for Convolutional Neural Networks. In the structure of a CNN model, Convolutional layers are generally what track the spatial information and *learn* to extract features like the edges of the objects. The convolutional layer is actually the process and the output. So when we refer to convolutional layers, what we are actually referring to are the output images of applying different convolutional kernels to our input. We have already discussed the kernels which are the matrices that we apply through out input to produce a processed output. We also know that varying the values of the elements inside the kernel allows us to change what our models detect. In the previous example, we have touched on applying kernel filters to an image by defining the kernel values. Since this is deep learning, we can actually make think of the kernel elements as our weights. With this idea of kernels as weights, we can therefore apply the concept of deep learning where we train our model to define its own set of weights for the kernel so that it can detect images and objects in any input image. For example, we can train our model to detect cats or dogs anywhere on the image or for example find a horizon in any image.
+
+<p align="center"><img src='.\Images\conv_layer.gif' height=500px></p>
+
+We then have to discuss some parameters that are important for the use of Convolutional Layers. First is the **stride** which dictates how much our kernel gets moved from its original point to its next point. Stride will affect how much data from our original image gets processed and which ones will contribute to the output. Now that we covered stride, let us move on to the other parameter which is directly linked to stride. This parameter is called **padding**. Padding will tell the Convolutional layer what to do on pixels that do not fit the kernel size we have indicated. Again, this happens on the edges of the input image where the kernel will move past the original dimensions of the image. We can either discard the pixels which are no longer fitting our kernel and input image dimensions or we can use zero padding. In the former method, all the edges will simply get a value of zero as we cannot perform convolution on them due to dimensionality issues. The later option artificially adds zeros to the edges of our input image, enough to allow us to still perform convolution without the loss of the data.
+
+Now that we have covered convolution and its parameters stride and pooling we can proceed with the next layer on our model which is the **Pooling layer**. Pooling layer allows us to reduce the dimensionality of our model therefore reducing the number of parameters which would lead to over fitting if left unchecked. There are two major types of pooling which are used in CNN architectures, the first is **Max pooling** and the second one is **Average pooling**. In the former, the elements in the window size are pooled together and the maximum value among the elements gets to represent that layer. In the later, the elements in the window size are averaged and this becomes the representative value of that layer.
+
+While we have mentioned two pooling options, what is usually used in terms of image classification and object detection is **_Max Pooling_**. The reason for this is that we want the most important details to get represented in our output. Doing an averaging operation would lead to smoothing out of the output which is actually the opposite of what we are trying to achieve.
+
+<p align="center"><img src='.\Images\maxpooling_ex.png' height=200px></p>
+
+Now that we know what the different layers for our CNN model,  we can proceed with its application in code.
+
+```python
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+    
+# define a neural network with a single convolutional layer with four filters
+class Net(nn.Module):
+
+    def __init__(self, weight):
+        super(Net, self).__init__()
+        # initializes the weights of the convolutional layer to be the weights of the 4 defined filters
+        k_height, k_width = weight.shape[2:]
+        # assumes there are 4 grayscale filters
+        self.conv = nn.Conv2d(1, 4, kernel_size=(k_height, k_width), bias=False)
+        self.conv.weight = torch.nn.Parameter(weight)
+
+    def forward(self, x):
+        # calculates the output of a convolutional layer
+        # pre- and post-activation
+        conv_x = self.conv(x)
+        activated_x = F.relu(conv_x)
+
+        # returns both layers
+        return conv_x, activated_x
+
+# instantiate the model and set the weights
+weight = torch.from_numpy(filters).unsqueeze(1).type(torch.FloatTensor)
+model = Net(weight)
+
+# print out the layer in the network
+print(model)
+```
+
+In the code block above, we have defined our convolution in the `__init__` block. We have also defined the characteristics of our `forward` pass. One additional thing we did here is that we loaded up our filters which we have defined our self. Although it is not shown here, it was discussed in the original notebook. To give you an idea of the filters we had, I have added the image below for reference.
+
+Now, the input of the image is a car which is Udacity's self driving car.
+
+<p align="center"><img src='.\Images\input_initialized_pytorch.png' height=500px></p>
+
+When we apply our pre-defined filter to the input image, we get interesting results at the output end. From `Filter_1` we get emphasis on the left edges. From `Filter_2` we get right edge emphasis. The same ideas go to filters 3 and 4 which emphasizes the top-to-bottom transition edges and vice-versa. Once we are able to visualize the output of applying filters to an input, we should get the general idea that stacking multiple filters like these to our input image allows us to detect unique shapes and object outlines.
+
+<p align="center"><img src='.\Images\filters_pytorch.png' width=1000px></p>
+<p align="center"><img src='.\Images\Outputs_filtered.png' width=1000px></p>
+
+A final example in the visualization notebook is the use of activation layers for CNNs. The results are shown below. Now that I see these images it looks like the explanation I did earlier was reversed, filter 1 actually shows right edges.
+
+<p align="center"><img src='.\Images\Relu_Ativated_Output.png' width=1000px></p>
+
+## Day 16: November 25, 2018
+
+The examples yesterday were on using CNNs with `ReLU` activations, for our first example today we will be applying `Max Pooling` to our convolutions.
+
+```python
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+# define a neural network with a convolutional layer with four filters
+# AND a pooling layer of size (2, 2)
+class Net(nn.Module):
+
+    def __init__(self, weight):
+        super(Net, self).__init__()
+        # initializes the weights of the convolutional layer to be the weights of the 4 defined filters
+        k_height, k_width = weight.shape[2:]
+        # assumes there are 4 grayscale filters
+        self.conv = nn.Conv2d(1, 4, kernel_size=(k_height, k_width), bias=False)
+        self.conv.weight = torch.nn.Parameter(weight)
+        # define a pooling layer
+        self.pool = nn.MaxPool2d(2, 2)
+
+    def forward(self, x):
+        # calculates the output of a convolutional layer
+        # pre- and post-activation
+        conv_x = self.conv(x)
+        activated_x = F.relu(conv_x)
+
+        # applies pooling layer
+        pooled_x = self.pool(activated_x)
+
+        # returns all layers
+        return conv_x, activated_x, pooled_x
+
+# instantiate the model and set the weights
+weight = torch.from_numpy(filters).unsqueeze(1).type(torch.FloatTensor)
+model = Net(weight)
+
+# print out the layer in the network
+print(model)
+```
+
+So we have added the `MaxPool2d` layer to our CNN in PyTorch. Now that its added let us see the change in the output.
+
+<p align="center"><img src='.\Images\Output_maxpooled2d.png' width=1000px></p>
+
+Comparing the output of the `MaxPool2D` (above) model with the simple `ReLU` (below) model shows that there is now more emphasis on the edges detected. This is in line with the idea behind Max Pooling which is *to showcase the most prominent value for the window*.
+
+<p align="center"><img src='.\Images\Relu_Ativated_Output.png' width=1000px></p>
+
 ### Pipeline ideas and reading materials
 
 :bomb: [Deep Learning with Pytorch](https://medium.com/@josh_2774/deep-learning-with-pytorch-9574e74d17ad), a medium post from Josh Bernhard detailing the flow of the final Project.
