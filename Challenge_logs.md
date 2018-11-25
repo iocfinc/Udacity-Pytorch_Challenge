@@ -1113,6 +1113,31 @@ Comparing the output of the `MaxPool2D` (above) model with the simple `ReLU` (be
 
 <p align="center"><img src='.\Images\Relu_Ativated_Output.png' width=1000px></p>
 
+Now that we now of the three basic convolution layers, we can proceed with learning about their implementation. Here is the [Convolution documentation](https://pytorch.org/docs/stable/nn.html#conv2d) from PyTorch for our guidance.
+
+Also, its important to learn about the concept of *image augmentation*.
+
+## Day 17: November 26, 2018
+
+Approaching the 20 Day mark, I have a lot to do still but I have also covered a lot since. I will keep pushing.
+
+We now move on to learning about the concept of styles and how it can be extracted from an image and eventually transferring these styles to another image. We can think of the *style* of an image as a certain unique feature that is recurring in an image. For example, certain brush strokes or certain patterns repeated throughout our image. This could be taken as styles. Since they are still features in the image, we can still train our network to look for them via filters. Knowing these filters would then allow us to apply a certain style from the *style image* on to a second image which is called the *content image*. The resulting output of this style transfer would be a third image which has the base image of the content image but with the applied filters to make it look a certain style.
+
+What is the process of style transfer? This is the interesting part, we are using a CNN network (VGG19 for this case). We input our images, both input and output, to the VGG19 and we get their content representation. This *content representation* is simply the value of features taken deep within the CNN model. What this provides is the feature or think of it as the current style of the images. We get two content representations, one for the content image (input content) and another for style image (style content). The next step is we calculate the loss between our input content and our style content. By doing this we are actually getting the difference in style between between our target image and our style image. By knowing the loss we can then use optimizers to minimize the loss effectively transferring the style of our style content to the target image. In a way, VGG19 is not used as a classifier but as a feature extractor. Then once the feature is extracted a loss function is defined for the target image and the reference style and by using backpropagation we adjust the filters on the target image to match a certain representation of our style image.
+
+Need to read more on Gram Matrix, they are the mathematical equivalent of the content representation of an image. Gram matrix are achieved by converting the 3D convolutional layers (2D image but with depth makes it 3D) to its 2D representation by sort of flattening it. Then this 2D matrix is multiplied by its transpose so that we get a square matrix. This matrix is then considered as our gram matrix. It contains all the features of the image up to that point. To get the the most style transfer of an image, we have to consider its large scale style up until the smallest style details it has. This will eventually lead us to having multiple gram matrices for representing the different dimensions of the image from the original and large scale style (generic) to the smaller scale style (minute). This allows us to copy the most style details.
+
+Since gram matrices are value representations of the image and the style, we know that our loss function should be regression. They tend to use Mean Squared error for this application and we will be using that as well. This would allow us to adjust the weights of the target image to reflect a value closer to the style we want.
+
+A final thing before we proceed is the ratio of our style to content. The idea behind this raiton is that we want to control *"how much"* style we want to transfer. The multiplier for content weight is denoted by $\alpha$. For the style weight, the multiplier is denoted by $\beta$. The ration between them is denoted as $\alpha / \beta$. The general idea is that $\beta$ values will always be larger than $\alpha$ which intuitively makes sense since we want to actually transfer the style. The trend is that the smaller the value of the ratio between the two weights, the more style we are transferring to our target image. One thing to not is that while we want to transfer as much style to our target as possible, we also have to consider how much style is too much. There will be a ratio where we can say that the style transfer has gone overborad but this is subjective to the effect that we want to achieve.
+
+The objectives for today would be to do the practice exercises in CNN for PyTorch. These are already available in Colab as I have copied the repo into there.
+
+* [ ] - Finish up Transfer learning videos :dart:
+* [ ] - CNN training exercises :dart:
+* [ ] - Create a repository for Colab code snippets :gem:
+* [ ] - Write up one pager, contact careers for inputs :date:
+
 ### Pipeline ideas and reading materials
 
 :bomb: [Deep Learning with Pytorch](https://medium.com/@josh_2774/deep-learning-with-pytorch-9574e74d17ad), a medium post from Josh Bernhard detailing the flow of the final Project.
