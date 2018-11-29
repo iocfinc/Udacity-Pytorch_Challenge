@@ -1129,14 +1129,100 @@ Need to read more on Gram Matrix, they are the mathematical equivalent of the co
 
 Since gram matrices are value representations of the image and the style, we know that our loss function should be regression. They tend to use Mean Squared error for this application and we will be using that as well. This would allow us to adjust the weights of the target image to reflect a value closer to the style we want.
 
-A final thing before we proceed is the ratio of our style to content. The idea behind this raiton is that we want to control *"how much"* style we want to transfer. The multiplier for content weight is denoted by $\alpha$. For the style weight, the multiplier is denoted by $\beta$. The ration between them is denoted as $\alpha / \beta$. The general idea is that $\beta$ values will always be larger than $\alpha$ which intuitively makes sense since we want to actually transfer the style. The trend is that the smaller the value of the ratio between the two weights, the more style we are transferring to our target image. One thing to not is that while we want to transfer as much style to our target as possible, we also have to consider how much style is too much. There will be a ratio where we can say that the style transfer has gone overborad but this is subjective to the effect that we want to achieve.
+A final thing before we proceed is the ratio of our style to content. The idea behind this ratio is that we want to control *"how much"* style we want to transfer. The multiplier for content weight is denoted by $\alpha$. For the style weight, the multiplier is denoted by $\beta$. The ration between them is denoted as $\alpha / \beta$. The general idea is that $\beta$ values will always be larger than $\alpha$ which intuitively makes sense since we want to actually transfer the style. The trend is that the smaller the value of the ratio between the two weights, the more style we are transferring to our target image. One thing to not is that while we want to transfer as much style to our target as possible, we also have to consider how much style is too much. There will be a ratio where we can say that the style transfer has gone overborad but this is subjective to the effect that we want to achieve.
 
 The objectives for today would be to do the practice exercises in CNN for PyTorch. These are already available in Colab as I have copied the repo into there.
 
-* [ ] - Finish up Transfer learning videos :dart:
+## Day 18: November 27, 2018
+
+Excited to do the CNN training exercises and transfer learning exercises. I just have to do finish up my APE today and I should be good to start these items.
+
+In the meantime I have finished up the transfer learning videos. Up next is RNNs which is a bit short. Its just that and I think 3 more modules. I have not yet touched on the lab challenge but we will get there. I will be putting in the work. :frowning:
+
+* [x] - Finish up Transfer learning videos :dart:
 * [ ] - CNN training exercises :dart:
-* [ ] - Create a repository for Colab code snippets :gem:
+* [x] - Create a repository for Colab code snippets :gem:
 * [ ] - Write up one pager, contact careers for inputs :date:
+
+## Day 19: November 28, 2018
+
+Slight change of plans. I am deep in work right now. There will be a slow down in progression in the coming days. :sob:
+
+## Day 20: November 29, 2018
+
+Day 20. What I accomplished yesterday was the Colab Code snippets repo. That is already done. For today, more on background reading for the competition. Plan is to read up Kernels from previous Kaggle Competitions.
+
+For now I am reading this Kernel on Kaggle [Black & White CNN](https://www.kaggle.com/titericz/black-white-cnn-lb-0-782). I am finding some interesting boiler plates for use. I lifted some good blocks and pasted it below. It is a customizable input CNN pipeline. Simple loops in Python but it makes sense and makes life easier. :wink:
+
+```python
+def custom_single_cnn(size, conv_layers=(8, 16, 32, 64), dense_layers=(512, 256), conv_dropout=0.2,
+                      dense_dropout=0.2):
+
+    '''
+    Source: https://www.kaggle.com/titericz/black-white-cnn-lb-0-782
+    '''
+    model = Sequential()
+    model.add( Conv2D(conv_layers[0], kernel_size=(3, 3), padding='same', activation='relu', input_shape=(size, size, 1)) )
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+    #if conv_dropout:
+    #    model.add(Dropout(conv_dropout))
+
+    for conv_layer_size in conv_layers[1:]:
+        model.add(Conv2D(conv_layer_size, kernel_size=(3, 3), activation='relu'))
+        model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+        if conv_dropout:
+            model.add(Dropout(conv_dropout))
+
+    model.add(Flatten())
+    if dense_dropout:
+        model.add(Dropout(dense_dropout))
+
+    for dense_layer_size in dense_layers:
+        model.add(Dense(dense_layer_size, activation='relu'))
+        model.add(Activation('relu'))
+        if dense_dropout:
+            model.add(Dropout(dense_dropout))
+
+    model.add(Dense(NCATS, activation='softmax'))
+    # NOTE: NCATS here is number of categories which is dependent on the dataset.
+    return model
+
+def top_3_accuracy(y_true, y_pred):
+    return top_k_categorical_accuracy(y_true, y_pred, k=3)
+
+def top3_acc( tgt, pred ):
+    sc = np.mean( (pred[:,0]==tgt) | (pred[:,1]==tgt) | (pred[:,2]==tgt) )
+    return sc
+```
+
+This **WILL** make creating the model easier and it should still hold true for PyTorch. `custom_single_cnn` will create the the model for the CNN from the input up until the classification, __*neat*__.
+
+### Sample use case
+
+No need to define every single layer. :+1:
+
+```python
+STEPS = 500
+size = 32
+batchsize = 512
+
+model = custom_single_cnn(size=size,
+                          conv_layers=[128, 128],
+                          dense_layers=[2048],
+                          conv_dropout=False,
+                          dense_dropout=0.10 )
+model.compile(optimizer=Adam(lr=0.002), loss='categorical_crossentropy',
+              metrics=[categorical_crossentropy, categorical_accuracy, top_3_accuracy])
+print(model.summary())
+```
+
+Here is a quick excerpt from user `bestfitting` regarding the recently concluded Airbus Ship Detection Challenge.
+
+>>Thank you! It's quite lucky to get top 3 in this competition. There are so many great and kind kagglers at kaggle,I am only a common one,there is no magic. According to my limited experiences on kaggle competitions,we all want to do more experiments during a limited time,there are a lot of ways:finding some teamates,getting more computation resources,and investing more time... In my humble opinion,the most important factor is efficiency. To improve efficiency,learning from others and learn from previous competitions are important. For example,my solution of this competition is quite similar to SeaLion competition,only replace the UNET model to SALT competition's.To save training time,I cropped 256x256 patchs where may containing ships from 768x768 images, just as I had done in sealion competition,so I can train models on a 1080Ti GPU easily And I try to do experiments on small and simple model and data as I did in CDiscount competition,it is very important in a competition with large dataset,I find res18 with 96x96 size input is enough for experiments in Draw competition,I am training model on my old machine with 4 Titan Maxwell GPUs :) Learning from others(absolutley including you @titericz) is very helpful to me,during SALT and this competition,I read all the solutions of related kaggle competitions,for example,DSB 2018(and I read your @dhammack solution of DSB2017 solution carefully after I entered Carvana Competition) so I can make sure I did not miss any skills and tricks related.By doing so,I can 'Teamup' with all the winners. As we know,the deep learning is very hot in both academic and industry,so I read papers everyday,ICCV,CVPR....,and search and read all related papers during a competition(>100 per competition often),what's more, I also read source codes of them or reproduce some of them(I find if we can be proficient in using Keras,pytorch,caffe,tensorflow,it will be more efficient,my experiences as an enthusiastic programmer helped me a lot,I read, modified a lot of software and built solutions on them,such as Android,Eclipse,Birt,Hadoop,Mahout,MySql...these names bring back so many bitter-sweet memories )When I need them in a competition,I can select some most promising one,for example,I find CBAM is a very good attention method,so I used it in SALT and this competition,and it's better than SE mechamism.By reading papers,we can 'Teamup' with most professional persons in the world in a certain field.I think these are also @hengck23 and @mihaskalic 's everyday pratices. As to my everyday life and job,I do physical exercises every day at least for an hour and I can arrange my work freely,so I can start a training and predicting batch and then launch a telephone meeting to discuss some projects in real life,I think they are much easier than kaggle and algorithms such as BERT--I'm reading now :)
+
+I am learning a lot just by reading these discussion topics. The use of templates and previous challenges builds up our skills in competing. Some more additiona readings from the user is [Fraud detection solution explanation](https://www.kaggle.com/c/talkingdata-adtracking-fraud-detection/discussion/56262) and [Understanding Amazon from Space solution](https://www.kaggle.com/c/planet-understanding-the-amazon-from-space/discussion/36809).
+
+There are a lot of good tutorials and knowledge competitions in Kaggle that are worth looking into [Titanic Tutorial](https://www.kaggle.com/mrisdal/exploring-survival-on-the-titanic). Then there is this Kernel on [Data Exploration in Python](https://www.kaggle.com/pmarcelino/comprehensive-data-exploration-with-python).
 
 ### Pipeline ideas and reading materials
 
