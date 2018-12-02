@@ -1220,11 +1220,134 @@ Here is a quick excerpt from user `bestfitting` regarding the recently concluded
 
 >>Thank you! It's quite lucky to get top 3 in this competition. There are so many great and kind kagglers at kaggle,I am only a common one,there is no magic. According to my limited experiences on kaggle competitions,we all want to do more experiments during a limited time,there are a lot of ways:finding some teamates,getting more computation resources,and investing more time... In my humble opinion,the most important factor is efficiency. To improve efficiency,learning from others and learn from previous competitions are important. For example,my solution of this competition is quite similar to SeaLion competition,only replace the UNET model to SALT competition's.To save training time,I cropped 256x256 patchs where may containing ships from 768x768 images, just as I had done in sealion competition,so I can train models on a 1080Ti GPU easily And I try to do experiments on small and simple model and data as I did in CDiscount competition,it is very important in a competition with large dataset,I find res18 with 96x96 size input is enough for experiments in Draw competition,I am training model on my old machine with 4 Titan Maxwell GPUs :) Learning from others(absolutley including you @titericz) is very helpful to me,during SALT and this competition,I read all the solutions of related kaggle competitions,for example,DSB 2018(and I read your @dhammack solution of DSB2017 solution carefully after I entered Carvana Competition) so I can make sure I did not miss any skills and tricks related.By doing so,I can 'Teamup' with all the winners. As we know,the deep learning is very hot in both academic and industry,so I read papers everyday,ICCV,CVPR....,and search and read all related papers during a competition(>100 per competition often),what's more, I also read source codes of them or reproduce some of them(I find if we can be proficient in using Keras,pytorch,caffe,tensorflow,it will be more efficient,my experiences as an enthusiastic programmer helped me a lot,I read, modified a lot of software and built solutions on them,such as Android,Eclipse,Birt,Hadoop,Mahout,MySql...these names bring back so many bitter-sweet memories )When I need them in a competition,I can select some most promising one,for example,I find CBAM is a very good attention method,so I used it in SALT and this competition,and it's better than SE mechamism.By reading papers,we can 'Teamup' with most professional persons in the world in a certain field.I think these are also @hengck23 and @mihaskalic 's everyday pratices. As to my everyday life and job,I do physical exercises every day at least for an hour and I can arrange my work freely,so I can start a training and predicting batch and then launch a telephone meeting to discuss some projects in real life,I think they are much easier than kaggle and algorithms such as BERT--I'm reading now :)
 
-I am learning a lot just by reading these discussion topics. The use of templates and previous challenges builds up our skills in competing. Some more additiona readings from the user is [Fraud detection solution explanation](https://www.kaggle.com/c/talkingdata-adtracking-fraud-detection/discussion/56262) and [Understanding Amazon from Space solution](https://www.kaggle.com/c/planet-understanding-the-amazon-from-space/discussion/36809).
+I am learning a lot just by reading these discussion topics. The use of templates and previous challenges builds up our skills in competing. Some more additional readings from the user is [Fraud detection solution explanation](https://www.kaggle.com/c/talkingdata-adtracking-fraud-detection/discussion/56262) and [Understanding Amazon from Space solution](https://www.kaggle.com/c/planet-understanding-the-amazon-from-space/discussion/36809).
 
 There are a lot of good tutorials and knowledge competitions in Kaggle that are worth looking into [Titanic Tutorial](https://www.kaggle.com/mrisdal/exploring-survival-on-the-titanic). Then there is this Kernel on [Data Exploration in Python](https://www.kaggle.com/pmarcelino/comprehensive-data-exploration-with-python).
 
+## Day 21: November 30, 2018
+
+Today, the focus is in progressing on the RNN lesson. I am now on Character-wise RNN. I am still skipping on the notebooks but I will be back for them later. Right now the idea is to finish the lectures first, I already have watched some of them but I am excited to learn about implementation in PyTorch.
+
+Also, in terms of progress in the Lab Challenge I have been reading up on Kaggle some discussions and Kernels. The lab challenge channel is also buzzing with activity. I have to reconnect with Rob and others to discuss this and possibly have some talk on their progression as well. For now, head down and watch on.
+
+7:00 PM, I just finished the Character-wise RNN implementation module for PyTorch. The same concept holds true for this one, obviously. Its just the implementation in PyTorch that is different. We still have to consider the batches and sequence lengths and we are still going to get some gibberish results some times. All of those things can be improved, its the concept here and the implementation that counts.
+
+So now I am on the Sentiment analysis using RNNs. This is an interesting topic because I am already looking at a use case for this after it is done. Something work related. :smirk:
+
+I am also browsing the Final Project section. It's due in 1 month. Talk about pressure. The flow would be that the model has to be created, and then from there we have to save our checkpoints (deployment of PyTorch Models should cover this) and load that up to Udacity's notebook for evaluation. Basically, they want us to make use of the presented public data to build our model and then send them the checkpoints for evaluation. Aiming for **_TOP_** because what else is there to aim for.:dart:
+
+[Resume writing tips](https://zety.com/blog/data-scientist-resume-example).
+
+https://www.kaggle.com/mjbahmani/top-5-data-visualization-libraries-tutorial
+https://www.kaggle.com/titericz
+https://medium.com/neuralspace/kaggle-1-winning-approach-for-image-classification-challenge-9c1188157a86
+
+## Day 22: December 1, 2018
+
+I was just reading a post today which gave me a great new idea in my head. This is the [article](https://medium.com/neuralspace/kaggle-1-winning-approach-for-image-classification-challenge-9c1188157a86) in Medium. What I liked about it is that it gives a semblance of structure and with structure its easier to at least have direction.
+
+### Study the Dataset
+
+The outline is **first to study the data**, with the context of what the task is. We need to first analyze our data before we proceed with creating a model. We have to know how complex our data is, if it is balanced or unbalanced. This is where visualizing the dataset could come handy. What they recommend is to use t-Distributed Stochastic Neighbor Embedding to reduce dimensionality and visualize the data.
+
+>>t-Distributed Stochastic Neighbor Embedding (t-SNE) is a technique for dimensionality reduction that is particularly well suited for the visualization of high-dimensional datasets. The technique can be implemented via Barnes-Hut approximations, allowing it to be applied on large real-world datasets.
+
+Here is what t-SNE would look like for both the Kaggle Seedling dataset and MNIST dataset.
+
+<p align="center"><img src='.\Images\TSNE-Kaggle-Seedlings.png' width=1000px></p>
+
+<p align="center"><img src='.\Images\mnist_tsne.jpg' width=1000px></p>
+
+What does t-SNE allow us to see? It shows us the difference between the classes of the data. It will allow us to know if it is difficult for humans or for machines to classify. If we look at the the seedling data set (first one), it shows that the classes are distributed and its quite difficult to classify them. Looking at the MNIST dataset (2nd image) shows that the numbers are fairly easy to classify. Another important thing the t-SNE might be able to provide is which classes tend to have similar traits and therefore much harder to distinguish.
+
+One other basic method under the dataset analysis portion is looking at our class distribution. This would allow us to see if there is under-representation of classes in the dataset which will contribute to our accuracy as well. Below we see the initial distribution of our classes. The next image visualizes the distribution in our data and it clearly shows some under representation. We would be able to solve this on the next steps.
+
+<p align="center"><img src='.\Images\kaggle-image-distribution.png' width=500px></p>
+
+<p align="center"><img src='.\Images\kaggle-distribution-graph.png' width=500px></p>
+
+Now that we are able to visualize the data we are now able to do some basic benchmarking test to it. The objective of this is that we want an accuracy and result that will be our basis of knowing whether we are moving in the right direction (lower loss, higher accuracy etc.). The first step in creating a benchmark would be to create a *training and validation set* which is covered in the documentation of PyTorch or SKLearn.
+
+### Create a Benchmark
+
+In step one we have covered what task is to be performed as well as analyze our data. In the sample of the article we are following, the objective is to classify seedlings from images. From here we know that this is a *classification problem* and that since we are dealing with image inputs we would want to use *Convolutional Neural Networks*.
+
+A sample benchmark would be using the pre-trained network from the available networks in the library. Keras and torchvision has some pre-trained models in the library available for download and use. What our benchmark would be is to have a simple pre-trained model as feature extractor and build on top of it some fully connected layer. In the case of the author's benchmark, he used the Keras library pre-trained model in the ImageNet dataset and he slowly fine tuned it to his task. Note, we are using ImageNet trained models here because it is the best fit to our task. ImageNet would have covered classifying plants or flowers. Using MNIST in here would have been a bad choices since those are handwritten digits which has nothing to do with seedlings, or plants. **[TL:DR]** _Knowing the background of the models would be to your advantage so try reading their papers as well_.
+
+Back to the author's implementation, he used two pre-trained models: ResNet50 and InceptionResNetV2 for his task. The reason for choosing two models is that it allowed him to benchmark the dataset on one simple and one high end model to understand if it is overfitting/underfitting the dataset on the model.
+
+<p align="center"><img src='.\Images\Benchmark-Kerasmodels.png' width=800px></p>
+
+From the authors implementation, he used a pre-trained model and removed the last output layer. From that he added an output of 12 nodes to provide the probability distribution output of the classes.
+
+> The goal of the benchmarking step is for us to know if we can improve our model by testing it out on some pre-trained models and slowly un-freezing layers for additional fine-tuning. The end-game would therefore be a tabulated result of some runs on different variations of the model and their accuracy and other additional metrics.
+
+### Data cleaning and augmentation
+
+Once we have an idea of what the benchmark scores are we can then move on to improving the dataset. One way to do this is via *data augmentation*. Also, we can take on fixing the dataset. We know that the dataset is not balanced so we can do some balancing first.
+
+> Note: Real life datasets would rarely be balanced and this would mean that the performance of a model over a minority class is not that good. The cost of misclassifying a minority class example to a normal example is much higher than the cost of a normal class error. (from the original article)
+
+The article provides us two ways on how to deal with unbalanced data.
+
+1. **Adaptive synthetic sampling approach for imbalanced learning (ADASYN)** - This would generate additional synthetic data for classes with less samples. This augmentation is done based adaptively based on how difficult the class is to learn compared to other samples.
+
+>The essential idea of ADASYN is to use a weighted distribution for different minority class examples according to their level of difficulty in learning, where more synthetic data is generated for minority class examples that are harder to learn compared to those minority examples that are easier to learn. As a result, the ADASYN approach improves learning with respect to the data distributions in two ways: (1) reducing the bias introduced by the class imbalance, and (2) adaptively shifting the classification decision boundary toward the difficult examples. [5](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=4633969&tag=1)
+
+2. **Synthetic Minority Over-sampling Technique (SMOTE)** - This involves oversampling of minority classes and undersampling majority classes to get best results.
+
+>A combination of our method of over-sampling the minority (abnormal) class and under-sampling the majority (normal) class can achieve better classifier performance (in ROC space) than only under-sampling the majority class.[6]()
+
+<p align="center"><img src='.\Images\Kaggle-Smote-Adasyn.png' width=800px></p>
+
+## Day 23: November 2, 2018
+
+**Continuation of the pipeline from yesterday:**
+
+Once we are able to get the better algorithm to balance the dataset, we are going to augment our data. Remember that balancing first before augmentation. In terms of augmentation we have various options which can be located at the [documentation for transforms](https://pytorch.org/docs/stable/torchvision/transforms.html). We can do scaling, cropping, rotation, flipping, off-centered crop, light-condition changes  and translation as well as using GANS. Once we are able to augment our data, we can proceed with the next step.
+
+### Hyperparameter Optimization
+
+Since we have a benchmark, a balanced and augmented data, we can proceed with playing with our hyperparameters. We can play with our learning rates and adjust them. One idea presented in the article was the use for **cyclical learning rates**. The idea behind it is that the learning rate gets change within a range of values instead of consistently decreasing. *Note that this is also a good time to record as much as we can in terms of the results so that we can graph them*. An example graph below shows that the loss starts to increase again past the $10^{-1}$ learning rate.
+
+<p align="center"><img src='.\Images\LR-VS-Loss.png' width=500px></p>
+
+Once we are able to compute for the losses of the model, we can actually create new models and merge them together. This technique is called **Ensembling** and it is very popular in competition as it produces great results instead of a single model. The author went on to explain how he implemented **snapshot ensembling** [paper](https://arxiv.org/abs/1704.00109).
+
+Once the author found the learning rates, he set it down and started playing with the image size. Note that the goal of the learning rate experimentation is to find which learning rates converge best and give the better result. So back to playing around with image size, we can actually play around with the size of the image we input. If you think about it a larger input size will mean more pixels to play with and therefore more data and feature to possibly extract. The other face of the coin is that it is computationally expensive. For this reason, we have to also keep track of whether our changes in image size can lead to better result or is it just a wasted increase with little bearing to the metrics of the model. For the author's implementation he chose to train it on a 64x64 image size over ImageNet, unfreeze some layers, apply cyclic learning rate and snapshot ensembling, take the weights and change the size to 299*299 fine tuned the weights from the 64x64 model and do snapshot ensembling and learning rate with warm restarts.
+
+His implementation is well advanced but it should be doable in our case.
+
+### Result Visualization
+
+The final step to take would be to visualize the results. This will allow us to check with class are best and worst performers and take actions to improve their results if possible.
+
+A good way to understand the result is via the confusion matrix.
+
+>In the field of machine learning and specifically the problem of statistical classification, a confusion matrix, also known as an error matrix, is a specific table layout that allows visualization of the performance of an algorithm, typically a supervised learning one (in unsupervised learning it is usually called a matching matrix). Each row of the matrix represents the instances in a predicted class while each column represents the instances in an actual class (or vice versa). The name stems from the fact that it makes it easy to see if the system is confusing two classes (i.e. commonly mislabeling one as another).
+
+<p align="center"><img src='.\Images\kaggle-confusion-matrix.png' width=800px></p>
+
+
+As we can see above we have the confusion matrix of the predicted and true class for our model. Ideally, it should all bee high in the diagonal which would mean that the predicted class is the same as the true class. Even if the confusion matrix is not correct we can still use it as a basis in improving our model. We can find out which class is performing bad and try to augment that and retrain our model for that.
+
+Once we are happy with all our model's results, we merge the validation and training dataset into one. We make one last pass for our network in the merged set and we use that final model to test out the test dataset and see our results.
+
+### T-SNE
+
+Let us briefly read about [t_SNE](https://lvdmaaten.github.io/tsne/). It is a technique for dimensionality reduction that is well suited for visualization of high-dimensional datasets. In the author's [blog](https://lvdmaaten.github.io/tsne/) there are some implementations of the t-SNE on several languages and some FAQs as well. I suggest reading the original paper for more guidance.
+
+I found this [tutorial on GitHub](https://github.com/oreillymedia/t-SNE-tutorial).
+
+<p align="center"><img src='https://raw.githubusercontent.com/oreillymedia/t-SNE-tutorial/master/images/animation.gif' width=800px></p>
+
+
+
+Today is all going to be about implementing the very fist pipeline for competition. This is going to be bloody as this is going to be my first time doing something at this scale, what I was doing before were all hodge-podge and no defined structure. This time it will be different, and for the most part for the better as well.
+
 ### Pipeline ideas and reading materials
+
+:dart: Free [Machine Learning](https://www.kaggle.com/learn/machine-learning) course and [SQL](https://www.kaggle.com/learn/sql)
 
 :bomb: [Deep Learning with Pytorch](https://medium.com/@josh_2774/deep-learning-with-pytorch-9574e74d17ad), a medium post from Josh Bernhard detailing the flow of the final Project.
 
