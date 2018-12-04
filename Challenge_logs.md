@@ -646,6 +646,7 @@ Early start for the day. Currently doing Part 8. This is about Transfer Learning
 !unzip Cat_Dog_data.zip
 ```
 
+
 Since we now have the data set downloaded, I just have to recheck the directory the loadfile is located and make sure its available After those checks we then moved through normalization. Recall from Part 7 that when loading a model, we have to match some of our parameters to the ones used in the model to be loaded. In our case we have to define the correct normalization parameters for our model as well. The different color channels for the images where normalized using different means and standard deviations.
 
 ```python
@@ -1139,11 +1140,6 @@ Excited to do the CNN training exercises and transfer learning exercises. I just
 
 In the meantime I have finished up the transfer learning videos. Up next is RNNs which is a bit short. Its just that and I think 3 more modules. I have not yet touched on the lab challenge but we will get there. I will be putting in the work. :frowning:
 
-* [x] - Finish up Transfer learning videos :dart:
-* [ ] - CNN training exercises :dart:
-* [x] - Create a repository for Colab code snippets :gem:
-* [ ] - Write up one pager, contact careers for inputs :date:
-
 ## Day 19: November 28, 2018
 
 Slight change of plans. I am deep in work right now. There will be a slow down in progression in the coming days. :sob:
@@ -1300,7 +1296,7 @@ The article provides us two ways on how to deal with unbalanced data.
 
 <p align="center"><img src='.\Images\Kaggle-Smote-Adasyn.png' width=800px></p>
 
-## Day 23: November 2, 2018
+## Day 23: December 2, 2018
 
 **Continuation of the pipeline from yesterday:**
 
@@ -1328,7 +1324,6 @@ A good way to understand the result is via the confusion matrix.
 
 <p align="center"><img src='.\Images\kaggle-confusion-matrix.png' width=800px></p>
 
-
 As we can see above we have the confusion matrix of the predicted and true class for our model. Ideally, it should all bee high in the diagonal which would mean that the predicted class is the same as the true class. Even if the confusion matrix is not correct we can still use it as a basis in improving our model. We can find out which class is performing bad and try to augment that and retrain our model for that.
 
 Once we are happy with all our model's results, we merge the validation and training dataset into one. We make one last pass for our network in the merged set and we use that final model to test out the test dataset and see our results.
@@ -1341,11 +1336,70 @@ I found this [tutorial on GitHub](https://github.com/oreillymedia/t-SNE-tutorial
 
 <p align="center"><img src='https://raw.githubusercontent.com/oreillymedia/t-SNE-tutorial/master/images/animation.gif' width=800px></p>
 
+## Day 24: December 3, 2018
 
+I was just watching a YouTube video regarding t-SNE and its explanation. The example I can give for t-SNE is that it treats it like electrons (but of different charges not just + and -). What we mean here is that opposite points repel and similar points attract just like electrons. What happens is that at first we have a pile of points, as time goes on (i.e. model training) the points are able to know what class they are so they get attracted to those while at the same time getting repelled by other classes. This will go on for some time before the points are able to co-locate together with similar points and repel others of different classes.
 
-Today is all going to be about implementing the very fist pipeline for competition. This is going to be bloody as this is going to be my first time doing something at this scale, what I was doing before were all hodge-podge and no defined structure. This time it will be different, and for the most part for the better as well.
+### Taking on the challenge
+
+:heavy_check_mark: First up would be downloading the data to Drive. I need to do this once to have my data on my Google Drive. I have also unzipped the files so that I can work with it.
+
+```python
+# Downloading to Google Drive
+%cd 'My Drive/Colab Notebooks/pytorch_challenge'
+!pwd
+!ls
+!wget https://s3.amazonaws.com/content.udacity-data.com/courses/nd188/flower_data.zip
+!unzip flower_data.zip
+```
+
+## Day 25: December 4, 2018
+
+There are some mixup on the date. It is day 25 for December 4. A few days more to go. So we really need to have started progress in the Challenge portion. Right now I have been able to download the dataset to the Drive. Next step would be to load the images.
+
+```python
+'''
+    Source: https://pytorch.org/tutorials/beginner/finetuning_torchvision_models_tutorial.html
+    Load data section
+'''
+# Data augmentation and normalization for training
+# Just normalization for validation
+data_transforms = {
+    'train': transforms.Compose([
+        transforms.RandomResizedCrop(input_size),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    ]),
+    'val': transforms.Compose([
+        transforms.Resize(input_size),
+        transforms.CenterCrop(input_size),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    ]),
+}
+
+print("Initializing Datasets and Dataloaders...")
+
+# Create training and validation datasets
+image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x), data_transforms[x]) for x in ['train', 'val']}
+# Create training and validation dataloaders
+dataloaders_dict = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=batch_size, shuffle=True, num_workers=4) for x in ['train', 'val']}
+
+# Detect if we have a GPU available
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+```
+
+### General Checklist
+
+* [x] - Finish up Transfer learning videos :dart:
+* [ ] - CNN training exercises :dart:
+* [x] - Create a repository for Colab code snippets :gem:
+* [ ] - Write up one pager, contact careers for inputs :date:
 
 ### Pipeline ideas and reading materials
+
+:gem: Kaggle Competition [get started tutorial](http://blog.kaggle.com/2018/08/22/machine-learning-kaggle-competition-part-one-getting-started/)
 
 :dart: Free [Machine Learning](https://www.kaggle.com/learn/machine-learning) course and [SQL](https://www.kaggle.com/learn/sql)
 
@@ -1360,3 +1414,5 @@ Today is all going to be about implementing the very fist pipeline for competiti
 :bulb: SQL/noSQL for Database management and data wrangling.
 
 :hocho: There are a lot of examples/tutorials in PyTorch website  for projects.
+
+:bomb: [MRI brain images reconstruction](https://www.datacamp.com/community/tutorials/reconstructing-brain-images-deep-learning)
