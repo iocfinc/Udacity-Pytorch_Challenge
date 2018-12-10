@@ -11,11 +11,11 @@ Just to recap:
 
 The objective now is to create the `dataset` and `dataloader` functions for PyTorch to interface with the images.
 
-As I said before, the community in Slack is great. I found this [guide from other users](https://docs.google.com/document/d/1-MCDPOejsn2hq9EoBzMpzGv9jEdtMWoIwjkAa1cVbSM/edit#heading=h.nj23sjpj5u97) about [FAQs and common issues(https://github.com/ishgirwan/faqs_pytorch_scholarship/blob/master/Lab.md)] in the course.
+As I said before, the community in Slack is great. I found this [guide from other users](https://docs.google.com/document/d/1-MCDPOejsn2hq9EoBzMpzGv9jEdtMWoIwjkAa1cVbSM/edit#heading=h.nj23sjpj5u97) about [FAQs and common issues](https://github.com/ishgirwan/faqs_pytorch_scholarship/blob/master/Lab.md) in the course.
 
 Another helpful guide with regards to loading the dataset is [this notebook](https://colab.research.google.com/drive/1iDwVOoVBkuljUadRSCChs33iNtbrI6Wv#scrollTo=qn8t--2ttqDz).
 
-So there was some brain-fart moment :smirk: during the loading of the dataset. The I noticed that I had [this resource](https://medium.com/@josh_2774/deep-learning-with-pytorch-9574e74d17ad) flagged beforehand. Very interesting read. It is very informative and for the most part, covers most of the problems in the challenge.
+So there was some brain-fart moment :smirk: during the loading of the dataset. Then I noticed that I had [this resource](https://medium.com/@josh_2774/deep-learning-with-pytorch-9574e74d17ad) flagged beforehand. Very interesting read. It is very informative and for the most part, covers most of the problems in the challenge.
 
 :gem: [Josh's Guide on PyTorch Project.](https://medium.com/@josh_2774/deep-learning-with-pytorch-9574e74d17ad)
 
@@ -211,3 +211,69 @@ def train_model(model, dataloaders, criterion,optimizer,num_epochs = 20):
 We now have the code block for training. The problem right now is that the network is training for a while. I am not sure this should be the case as the runtime should have been GPU enabled.
 
 I need to pause. Its stuck for some reason and I feel like I'm banging my head against the wall. :cry:. I'll pause for a bit and resume this one later.
+
+## December 6, 2018 - Day 27 of the Challenge
+
+New plan of attack, divide and compile piece by piece instead of one entire helper function.
+
+And no progress was done today. Same thing will happen until next week.
+
+## December 10, 2018 - Day 31 of the Challenge
+
+```python
+start = time.time()
+val_acc_history = []
+best_model_wts = copy.deepcopy(model.state_dict())
+best_acc = 0.0 # Initialized at 0
+for epochs in num_epochs:
+    epoch_start = time.time()
+    print('Epoch {}/{}'.format(epoch, num_epochs-1))
+    print('-*-' * 10)
+    for phase in ['train','valid']: # Distinguish first if training or validation to turn off theupdates
+        if phase == 'train':
+            model.train()
+        else:
+            model.eval()
+        running_loss = 0.0
+        running_corrects = 0
+        for inputs, labels in dataloaders['train']:
+            inputs = inputs.to(device)
+            labels = labels.to(device)
+            optimizer.zero_grad()
+            outputs = model(inputs)
+            _, preds = torch.max(outputs,1)
+            loss = criterion(outputs, labels)
+            loss.backward()
+            optimizer.steps()
+            running_loss +=loss.item()*inputs.size(0)
+            running_corrects += torch.sum(preds == labels.data)
+        print('Updating epoch loss')
+        epoch_loss = running_loss / dataset_sizes[phase]
+        epoch_acc = running_corrects.double()/ dataset_sizes[phase]
+        epoch_elapsed = time.time() - epoch_start
+        print('Epoch completed in {:0f}m {:0f}s'.format(epoch_elapsed //60, epoch_elapsed %60))
+        print('{} Loss: {:.4f}  Acc: {:.4f}'.format(phase, epoch_loss, epoch_acc))
+        # NOTE: For updating the best model
+        if phase =='valid' and epoch_acc > best_acc:
+            best_acc = epoch_acc
+            best_model_wts = copy.deepcopy(model.state_dict())
+        if phase =='valid':
+            val_acc_history.append(epoch_acc)
+        print()
+    time_elapsed = time.time() - start
+    print('Training completed in {:0f}m {:0f}s'.format(time_elapsed //60, time_elapsed % 60))
+    print('Best val Acc: {:.4f}'.format(best_acc))
+    # Return the model with the best weights
+    model.load_state_dict(best_model_wts)
+
+```
+
+I am giving this set above one last setup before I scratch it and start something new. It is not even training properly by the looks of it. I will leave it at 1 hour and check if it will even go to the second epoch. As it stands its already eating up 15 minutes.
+
+## December 11, 2018 - Day 32 of the Challenge
+
+Left the notebook to run training and slept in. I woke up and there is no result. Somehow there is an issue with the looping I believe, it just sits there stuck at epoch 1. It got disconnected from the session.
+
+Since it is obviously not working, I need a new approach.
+
+[Verification OpenSource](https://github.com/GabrielePicco/deep-learning-flower-identifier)

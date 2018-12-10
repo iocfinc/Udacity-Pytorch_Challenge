@@ -1394,6 +1394,9 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 Another implementation day today. Most updates would be on the Lab Journal.
 
+## Day 31: December 10, 2018
+
+Time skip. No progress for 5 days. What a great start. I have been so unmotivated lately. For today, there is no plan on what to do. I'll just update the lab-journal for new entries. Possibly get the training and validation session to run first.
 
 ### General Checklist
 
