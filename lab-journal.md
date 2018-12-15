@@ -761,8 +761,128 @@ weights = make_weights_for_balanced_classes(dataset_train.imgs, len(dataset_trai
 weights = torch.DoubleTensor(weights)
 sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, len(weights))
 train_loader = torch.utils.data.DataLoader(dataset_train, batch_size=args.batch_size, shuffle = True,sampler = sampler, num_workers=args.workers, pin_memory=True)
-
-
 ```
 
-Additional guide from [Keras on Pre-trained models](https://keras.io/applications/)
+```python
+'''
+Here are the results.
+Setup was: LR = 0.001, LR_scheduler was ReduceLROnPlateau, initial_model = densenet169, 15 epochs, Batchsize = 64
+'''
+cuda
+Epoch 0/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 2.000000m 24.407018s
+train Loss: 4.0518 Acc: 0.1114
+Epoch completed in 0.000000m 18.858923s
+valid Loss: 2.5880 Acc: 0.3619
+
+Epoch 1/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 2.000000m 20.388797s
+train Loss: 2.5784 Acc: 0.3494
+Epoch completed in 0.000000m 18.746554s
+valid Loss: 1.3678 Acc: 0.6161
+
+Epoch 2/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 2.000000m 21.610583s
+train Loss: 1.9339 Acc: 0.4748
+Epoch completed in 0.000000m 18.397746s
+valid Loss: 0.9029 Acc: 0.7592
+
+Epoch 3/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 2.000000m 21.945431s
+train Loss: 1.6675 Acc: 0.5449
+Epoch completed in 0.000000m 19.228431s
+valid Loss: 0.7057 Acc: 0.8154
+
+Epoch 4/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 2.000000m 23.849681s
+train Loss: 1.4893 Acc: 0.5871
+Epoch completed in 0.000000m 19.253587s
+valid Loss: 0.5992 Acc: 0.8386
+
+Epoch 5/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 2.000000m 24.447653s
+train Loss: 1.3423 Acc: 0.6320
+Epoch completed in 0.000000m 19.101235s
+valid Loss: 0.5301 Acc: 0.8496
+
+Epoch 6/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 2.000000m 24.337290s
+train Loss: 1.2626 Acc: 0.6534
+Epoch completed in 0.000000m 19.072001s
+valid Loss: 0.4738 Acc: 0.8729
+
+Epoch 7/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 2.000000m 25.040146s
+train Loss: 1.2344 Acc: 0.6569
+Epoch completed in 0.000000m 19.275203s
+valid Loss: 0.4263 Acc: 0.8985
+
+Epoch 8/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 2.000000m 26.248204s
+train Loss: 1.1774 Acc: 0.6749
+Epoch completed in 0.000000m 19.331133s
+valid Loss: 0.3587 Acc: 0.9059
+
+Epoch 9/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 2.000000m 22.067156s
+train Loss: 1.0971 Acc: 0.7013
+Epoch completed in 0.000000m 18.883429s
+valid Loss: 0.3644 Acc: 0.9071
+
+Epoch 10/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 2.000000m 23.130489s
+train Loss: 1.0878 Acc: 0.7005
+Epoch completed in 0.000000m 18.699926s
+valid Loss: 0.3547 Acc: 0.9010
+
+Epoch 11/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 2.000000m 23.717617s
+train Loss: 1.0312 Acc: 0.7172
+Epoch completed in 0.000000m 19.399459s
+valid Loss: 0.3473 Acc: 0.9108
+
+Epoch 12/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 2.000000m 26.140493s
+train Loss: 1.0104 Acc: 0.7256
+Epoch completed in 0.000000m 19.259526s
+valid Loss: 0.3489 Acc: 0.9034
+
+Epoch 13/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 2.000000m 26.161979s
+train Loss: 1.0299 Acc: 0.7228
+Epoch completed in 0.000000m 19.334597s
+valid Loss: 0.3410 Acc: 0.9120
+
+Epoch 14/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 2.000000m 26.249305s
+train Loss: 0.9726 Acc: 0.7335
+Epoch completed in 0.000000m 19.357714s
+valid Loss: 0.3090 Acc: 0.9181
+
+Training complete in 40m 47s
+Best val Acc: 0.918093
+[(0, tensor(0.3619, device='cuda:0', dtype=torch.float64)), (1, tensor(0.6161, device='cuda:0', dtype=torch.float64)), (2, tensor(0.7592, device='cuda:0', dtype=torch.float64)), (3, tensor(0.8154, device='cuda:0', dtype=torch.float64)), (4, tensor(0.8386, device='cuda:0', dtype=torch.float64)), (5, tensor(0.8496, device='cuda:0', dtype=torch.float64)), (6, tensor(0.8729, device='cuda:0', dtype=torch.float64)), (7, tensor(0.8985, device='cuda:0', dtype=torch.float64)), (8, tensor(0.9059, device='cuda:0', dtype=torch.float64)), (9, tensor(0.9071, device='cuda:0', dtype=torch.float64)), (10, tensor(0.9010, device='cuda:0', dtype=torch.float64)), (11, tensor(0.9108, device='cuda:0', dtype=torch.float64)), (12, tensor(0.9034, device='cuda:0', dtype=torch.float64)), (13, tensor(0.9120, device='cuda:0', dtype=torch.float64)), (14, tensor(0.9181, device='cuda:0', dtype=torch.float64))]
+```
+
+So now we are looking at the Densenet169 results. The results in the accuracy are higher which is good. But without the confusion matrix its hard to tell which part its having issues with. The marked improvement is the speed. Also, the size is now 54MB which is more manageable. This is good. The next step is to make the confusion matrix and the random sampling and balancing datasets.
+
+<p align="center"><img src='.\Images\Validation_Image-Densenet169(Stemless Gentian).png' width=500px></p>
+
+<p align="center"><img src='.\Images\Validation_Image-Densenet169(Poinsettia).png' width=500px></p>
+
+:gem: Additional guide from [Keras on Pre-trained models](https://keras.io/applications/)
