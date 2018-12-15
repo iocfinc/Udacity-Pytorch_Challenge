@@ -509,3 +509,260 @@ Best val Acc: 0.792176
 ```
 
 So the results are up. We can already see the saturation of accuracy at 0.7922 at epoch 7 of 10 (note that we started at epoch 0). What's next would be to finish first the rest of the notebook to make sure its working then we can continue working on improving the network.
+
+Okay, so now the notebook is complete.
+
+```python
+'''
+Here are the results.
+Setup was: LR = 0.001, LR_scheduler was ReduceLROnPlateau, initial_model = vgg19_bn, 10 epochs, Batchsize = 64
+Noticable improvements are:
+Speed, it is now taking 3 mins per epoch possibly due to the Batch Size increase. The cloud service can take it so might as well use it.
+Added RandomRotation to 360 degrees
+'''
+
+cuda
+Epoch 0/9
+----------
+Epoch completed in 3.000000m 46.058207s
+train Loss: 2.4487 Acc: 0.3773
+Epoch completed in 0.000000m 27.437752s
+valid Loss: 1.0728 Acc: 0.7372
+
+Epoch 1/9
+----------
+Epoch completed in 3.000000m 45.175089s
+train Loss: 2.0896 Acc: 0.4559
+Epoch completed in 0.000000m 26.954424s
+valid Loss: 0.9121 Acc: 0.7518
+
+Epoch 2/9
+----------
+Epoch completed in 3.000000m 42.353104s
+train Loss: 1.9727 Acc: 0.4944
+Epoch completed in 0.000000m 27.458014s
+valid Loss: 0.8118 Acc: 0.7702
+
+Epoch 3/9
+----------
+Epoch completed in 3.000000m 46.368856s
+train Loss: 1.8435 Acc: 0.5321
+Epoch completed in 0.000000m 27.573256s
+valid Loss: 0.7203 Acc: 0.8142
+
+Epoch 4/9
+----------
+Epoch completed in 3.000000m 45.971057s
+train Loss: 1.7503 Acc: 0.5525
+Epoch completed in 0.000000m 27.610880s
+valid Loss: 0.6261 Acc: 0.8484
+
+Epoch 5/9
+----------
+Epoch completed in 3.000000m 45.741116s
+train Loss: 1.7224 Acc: 0.5687
+Epoch completed in 0.000000m 27.494761s
+valid Loss: 0.7109 Acc: 0.8105
+
+Epoch 6/9
+----------
+Epoch completed in 3.000000m 43.247956s
+train Loss: 1.7163 Acc: 0.5704
+Epoch completed in 0.000000m 26.951281s
+valid Loss: 0.6066 Acc: 0.8594
+
+Epoch 7/9
+----------
+Epoch completed in 3.000000m 43.880978s
+train Loss: 1.6468 Acc: 0.5836
+Epoch completed in 0.000000m 27.595762s
+valid Loss: 0.5902 Acc: 0.8496
+
+Epoch 8/9
+----------
+Epoch completed in 3.000000m 45.816934s
+train Loss: 1.6005 Acc: 0.5955
+Epoch completed in 0.000000m 27.279377s
+valid Loss: 0.5809 Acc: 0.8570
+
+Epoch 9/9
+----------
+Epoch completed in 3.000000m 45.665560s
+train Loss: 1.6109 Acc: 0.5962
+Epoch completed in 0.000000m 27.315036s
+valid Loss: 0.5369 Acc: 0.8631
+
+Training complete in 42m 4s
+Best val Acc: 0.863081
+
+
+```
+
+Below is the screen shot of the utilization we have for the session. We have 3.06GB of RAM used, we could theoretically use a bigger batch size. The GPU is at 6.55GB with a max memory of 11GB possible.
+
+I am planning on increasing the batch size further to 128 and push the epochs higher. :smirk:
+
+<p align="center"><img src='.\Images\Colab-UTIL-VGG19_BN.png' width=800px></p>
+
+```python
+'''
+Here are the results.
+Setup was: LR = 0.001, LR_scheduler was ReduceLROnPlateau, initial_model = vgg19_bn, 15 epochs, Batchsize = 128
+
+'''
+
+cuda
+Epoch 0/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 3.000000m 48.554248s
+train Loss: 1.6426 Acc: 0.6064
+Epoch completed in 0.000000m 27.318775s
+valid Loss: 0.5432 Acc: 0.8557
+
+Epoch 1/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 3.000000m 44.743166s
+train Loss: 1.6360 Acc: 0.6103
+Epoch completed in 0.000000m 28.019140s
+valid Loss: 0.5955 Acc: 0.8606
+
+Epoch 2/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 3.000000m 49.990680s
+train Loss: 1.6658 Acc: 0.6036
+Epoch completed in 0.000000m 28.249335s
+valid Loss: 0.5436 Acc: 0.8729
+
+Epoch 3/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 3.000000m 50.346915s
+train Loss: 1.6462 Acc: 0.6061
+Epoch completed in 0.000000m 28.010622s
+valid Loss: 0.5786 Acc: 0.8619
+
+Epoch 4/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 3.000000m 50.423357s
+train Loss: 1.6258 Acc: 0.6134
+Epoch completed in 0.000000m 28.069263s
+valid Loss: 0.5805 Acc: 0.8557
+
+Epoch 5/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 3.000000m 46.965881s
+train Loss: 1.6364 Acc: 0.6151
+Epoch completed in 0.000000m 27.376075s
+valid Loss: 0.5519 Acc: 0.8778
+
+Epoch 6/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 3.000000m 47.479331s
+train Loss: 1.5779 Acc: 0.6247
+Epoch completed in 0.000000m 28.113638s
+valid Loss: 0.5504 Acc: 0.8729
+
+Epoch 7/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 3.000000m 51.070040s
+train Loss: 1.6519 Acc: 0.6082
+Epoch completed in 0.000000m 28.155762s
+valid Loss: 0.6243 Acc: 0.8716
+
+Epoch 8/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 3.000000m 50.553549s
+train Loss: 1.6031 Acc: 0.6224
+Epoch completed in 0.000000m 28.016906s
+valid Loss: 0.5203 Acc: 0.8888
+
+Epoch 9/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 3.000000m 48.361469s
+train Loss: 1.6074 Acc: 0.6207
+Epoch completed in 0.000000m 27.537701s
+valid Loss: 0.5419 Acc: 0.8680
+
+Epoch 10/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 3.000000m 46.876984s
+train Loss: 1.5788 Acc: 0.6276
+Epoch completed in 0.000000m 28.044666s
+valid Loss: 0.5595 Acc: 0.8826
+
+Epoch 11/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 3.000000m 50.721860s
+train Loss: 1.6030 Acc: 0.6239
+Epoch completed in 0.000000m 28.022674s
+valid Loss: 0.5975 Acc: 0.8667
+
+Epoch 12/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 3.000000m 50.219541s
+train Loss: 1.5591 Acc: 0.6352
+Epoch completed in 0.000000m 28.055629s
+valid Loss: 0.5514 Acc: 0.8680
+
+Epoch 13/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 3.000000m 45.440233s
+train Loss: 1.5317 Acc: 0.6285
+Epoch completed in 0.000000m 27.294172s
+valid Loss: 0.5530 Acc: 0.8778
+
+Epoch 14/14
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 3.000000m 49.172531s
+train Loss: 1.5443 Acc: 0.6320
+Epoch completed in 0.000000m 28.048302s
+valid Loss: 0.4972 Acc: 0.8961
+
+Training complete in 64m 9s
+Best val Acc: 0.896088
+[(0, tensor(0.8557, device='cuda:0', dtype=torch.float64)), (1, tensor(0.8606, device='cuda:0', dtype=torch.float64)), (2, tensor(0.8729, device='cuda:0', dtype=torch.float64)), (3, tensor(0.8619, device='cuda:0', dtype=torch.float64)), (4, tensor(0.8557, device='cuda:0', dtype=torch.float64)), (5, tensor(0.8778, device='cuda:0', dtype=torch.float64)), (6, tensor(0.8729, device='cuda:0', dtype=torch.float64)), (7, tensor(0.8716, device='cuda:0', dtype=torch.float64)), (8, tensor(0.8888, device='cuda:0', dtype=torch.float64)), (9, tensor(0.8680, device='cuda:0', dtype=torch.float64)), (10, tensor(0.8826, device='cuda:0', dtype=torch.float64)), (11, tensor(0.8667, device='cuda:0', dtype=torch.float64)), (12, tensor(0.8680, device='cuda:0', dtype=torch.float64)), (13, tensor(0.8778, device='cuda:0', dtype=torch.float64)), (14, tensor(0.8961, device='cuda:0', dtype=torch.float64))]
+
+
+```
+
+So the speed improvement earlier was not due to the batch size. It would look like we are now saturated in terms of Accuracy. This is possibly the best we can do without data augmentation. We are just above the 1hr mark in terms of the training I guess this is it. The next improvements would be in terms of the data augmentation and balancing.
+
+<p align="center"><img src='.\Images\Validation_Image-VGG19_BN(Stemless Gentian).png' width=500px></p>
+
+Evidence of under representation effects.
+
+<p align="center"><img src='.\Images\Validation_Image-VGG19_BN(Poinsettia).png' width=500px></p>
+
+Note: File name is saved as `model_file_name = 'classifier_vgg19_bn_best.pth'. Also, we have a problem, the file size of VGG is severely limiting us, a path file for the model is 494MB when downloaded. That is a big file.
+
+```python
+'''
+Found these on:
+https://discuss.pytorch.org/t/balanced-sampling-between-classes-with-torchvision-dataloader/2703/2
+https://discuss.pytorch.org/t/how-to-prevent-overfitting/1902/9
+https://github.com/ufoym/imbalanced-dataset-sampler/blob/master/examples/imagefolder.ipynb
+'''
+
+def make_weights_for_balanced_classes(images, nclasses):
+    count = [0] * nclasses
+    for item in images:
+        count[item[1]] += 1
+    weight_per_class = [0.] * nclasses
+    N = float(sum(count))
+    for i in range(nclasses):
+        weight_per_class[i] = N/float(count[i])
+    weight = [0] * len(images)
+    for idx, val in enumerate(images):
+        weight[idx] = weight_per_class[val[1]]
+    return weight
+
+dataset_train = datasets.ImageFolder(traindir)
+# For unbalanced dataset we create a weighted sampler
+weights = make_weights_for_balanced_classes(dataset_train.imgs, len(dataset_train.classes))
+weights = torch.DoubleTensor(weights)
+sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, len(weights))
+train_loader = torch.utils.data.DataLoader(dataset_train, batch_size=args.batch_size, shuffle = True,sampler = sampler, num_workers=args.workers, pin_memory=True)
+
+
+```
+
+Additional guide from [Keras on Pre-trained models](https://keras.io/applications/)
