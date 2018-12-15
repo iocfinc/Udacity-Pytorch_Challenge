@@ -274,6 +274,238 @@ I am giving this set above one last setup before I scratch it and start somethin
 
 Left the notebook to run training and slept in. I woke up and there is no result. Somehow there is an issue with the looping I believe, it just sits there stuck at epoch 1. It got disconnected from the session.
 
-Since it is obviously not working, I need a new approach.
+Since it is obviously not working, I need a rethink of what could be wrong.
+
+I think I may have figured it out. Its quite minute actually. I am thinking it had something to do with how I called my directory. I merged strings instead of `os.path`. Right now it is training. Seriously though. Was that it?
+
+Since it is now running, (FINALLY), I can shift my focus to creating the baseline and measurements. First up would be timings for speed measurements. Second would be recording the accuracy. Third would be to actually implement a very complicated model as well (InceptionV3) to check for over and under-fitting.
 
 [Verification OpenSource](https://github.com/GabrielePicco/deep-learning-flower-identifier)
+
+So first result:
+```python
+# NOTE: Current Parameters
+# Batch size
+# Criteria NLLLoss which is recommended with Softmax final layer
+criteria = nn.NLLLoss()
+# Observe that all parameters are being optimized
+optimizer = optim.Adam(model.classifier.parameters(), lr=0.001)
+# Decay LR by a factor of 0.1 every 4 epochs
+sched = lr_scheduler.StepLR(optimizer, step_size=4, gamma=0.1)
+# Number of epochs
+eps=5
+```
+For VGG19 - Pre-trained Fixed feature extraction model.
+```python
+
+Epoch 0/4
+----------
+train Loss: 2.6440 Acc: 0.4539
+valid Loss: 0.9257 Acc: 0.7421
+
+Epoch 1/4
+----------
+train Loss: 1.1459 Acc: 0.6821
+valid Loss: 0.7499 Acc: 0.7897
+
+Epoch 2/4
+----------
+train Loss: 0.9540 Acc: 0.7376
+valid Loss: 0.7065 Acc: 0.8068
+
+Epoch 3/4
+----------
+train Loss: 0.8814 Acc: 0.7582
+valid Loss: 0.6084 Acc: 0.8435
+
+Epoch 4/4
+----------
+train Loss: 0.6235 Acc: 0.8237
+valid Loss: 0.3788 Acc: 0.8949
+
+Training complete in 19m 12s
+Best val Acc: 0.894866
+```
+
+Now that it works, its all now up to improving it. I am interested in doing this mobile. Possibly create it using the mobilenet. It should train fast. Its interesting.
+
+## December 12, 2018 - Day 33 of the Challenge
+
+Right now I am moving on to baseline for Resnet152. Same idea as before, just changed some lines a bit to be sure that it matches the Resnet model.
+
+I actually have to abandon Resnet152 for now, it takes a long time. I am using Resnet18 as the first baseline. Re-computing again the time it will take. Below we have the results of the baseline for Resnet18. I had to rethink my overall strategy. By the looks of it, the first epochs take most of the time. It still converges though so that is good. At least now I know that I just need to have more patience in dealing with the first epoch. Also, The difference in size between VGG19 and Resnet18 is night and day. Their results are almost the same but the savings in space is what's selling the idea of Resnet18 to me. I want to check out Resnet50 then Resnet152 later. It is doable.
+
+```python
+Epoch 0/4
+----------
+Epoch completed in 12.000000m 12.717537s
+train Loss: 3.0937 Acc: 0.3381
+Epoch completed in 15.000000m 33.946764s
+valid Loss: 1.3286 Acc: 0.6993
+
+Epoch 1/4
+----------
+Epoch completed in 1.000000m 42.412760s
+train Loss: 1.3900 Acc: 0.6560
+Epoch completed in 1.000000m 56.414605s
+valid Loss: 0.6988 Acc: 0.8325
+
+Epoch 2/4
+----------
+Epoch completed in 1.000000m 42.071889s
+train Loss: 0.9681 Acc: 0.7497
+Epoch completed in 1.000000m 55.975896s
+valid Loss: 0.5092 Acc: 0.8729
+
+Epoch 3/4
+----------
+Epoch completed in 1.000000m 41.956042s
+train Loss: 0.8095 Acc: 0.7824
+Epoch completed in 1.000000m 55.861529s
+valid Loss: 0.4542 Acc: 0.8753
+
+Epoch 4/4
+----------
+Epoch completed in 1.000000m 42.830410s
+train Loss: 0.6662 Acc: 0.8304
+Epoch completed in 1.000000m 56.911821s
+valid Loss: 0.3498 Acc: 0.9156
+
+Training complete in 23m 19s
+Best val Acc: 0.915648
+```
+
+The convergence of the model for different rates would be the next problem that we should solve. This could be helped by the adjustment of the LR in a way, also we would want to add the graph of the losses for the epochs and the LR to make sure that they are still decreasing. This is a simple list for the code change. Very much doable. For now I have to go home, its 9:00 AM. I have more to do and I need sleep. Just happy that I am chipping away some progress on this one.
+
+
+```python
+# NOTE: From style transfer lecture:
+
+'''
+I am copying the content of the style transfer features. I am planning on reusing the method here in training the conv layers only.
+'''
+
+def get_features(image, model, layers=None):
+    """ Run an image forward through a model and get the features for 
+        a set of layers. Default layers are for VGGNet matching Gatys et al (2016)
+    """
+    
+    ## TODO: Complete mapping layer names of PyTorch's VGGNet to names from the paper
+    ## Need the layers for the content and style representations of an image
+    if layers is None:
+        layers = {'0': 'conv1_1',
+                  '5': 'conv2_1', 
+                  '10': 'conv3_1', 
+                  '19': 'conv4_1',
+                  '21': 'conv4_2',  ## content representation
+                  '28': 'conv5_1'}
+        
+    features = {}
+    x = image
+    # model._modules is a dictionary holding each module in the model
+    for name, layer in model._modules.items():
+        x = layer(x)
+        if name in layers:
+            features[layers[name]] = x
+            
+    return features
+```
+
+```python
+'''
+Example of how to freeze the layers via names.
+'''
+net.fc2.weight.requires_grad = False
+net.fc2.bias.requires_grad = False
+```
+
+## December 15, 2018 - Day 36 of the Challenge
+
+This is becoming uncharacteristically long missing daily updates. This has been a very hectic week. With Charlie acting up and monopolizing my time. Missing my updates on other tickets. Missing progress in the project. Missing home. This is really tiring. But a decision has been made. Next step is to carry it out and arrange for the contingencies. Right now I will be going home for the next few weeks. There will be time to do more of the challenge. The plan has been written on paper and shall be carried out.
+
+What is next for the project? **Finish up the entire pipeline first**. I was thinking about it wrong. The idea is to also get the results not just the accuracy. The image plotting and confusion matrix are in the later part of the notebook so we need to get there first. There is a sample of the notebook [here](https://github.com/GabrielePicco/deep-learning-flower-identifier). This should help.
+
+Now we are training RESNET18 at 10 epochs. This is just to check if there would be an improvement in the accuracy or if it will saturate.
+
+```python
+'''
+Here are the results.
+Setup was: LR = 0.001, Resnet18, 10 epochs, Batchsize = 32
+'''
+
+cuda
+Epoch 0/9
+----------
+Epoch completed in 7.000000m 45.221650s
+train Loss: 1.6388 Acc: 0.5707
+Epoch completed in 12.000000m 43.761453s
+valid Loss: 1.1383 Acc: 0.6993
+
+Epoch 1/9
+----------
+Epoch completed in 1.000000m 44.877961s
+train Loss: 1.5013 Acc: 0.6009
+Epoch completed in 1.000000m 59.837174s
+valid Loss: 1.0305 Acc: 0.7262
+
+Epoch 2/9
+----------
+Epoch completed in 1.000000m 49.457006s
+train Loss: 1.3347 Acc: 0.6462
+Epoch completed in 2.000000m 4.468249s
+valid Loss: 0.9435 Acc: 0.7298
+
+Epoch 3/9
+----------
+Epoch completed in 1.000000m 48.817481s
+train Loss: 1.2809 Acc: 0.6587
+Epoch completed in 2.000000m 3.711036s
+valid Loss: 0.8501 Acc: 0.7567
+
+Epoch 4/9
+----------
+Epoch completed in 1.000000m 47.415198s
+train Loss: 1.1599 Acc: 0.6954
+Epoch completed in 2.000000m 1.634180s
+valid Loss: 0.8152 Acc: 0.7653
+
+Epoch 5/9
+----------
+Epoch completed in 1.000000m 44.981900s
+train Loss: 1.1529 Acc: 0.6955
+Epoch completed in 1.000000m 59.446574s
+valid Loss: 0.7941 Acc: 0.7800
+
+Epoch 6/9
+----------
+Epoch completed in 1.000000m 44.666647s
+train Loss: 1.1266 Acc: 0.6973
+Epoch completed in 1.000000m 58.807862s
+valid Loss: 0.7833 Acc: 0.7922
+
+Epoch 7/9
+----------
+Epoch completed in 1.000000m 47.872149s
+train Loss: 1.1305 Acc: 0.7042
+Epoch completed in 2.000000m 2.699982s
+valid Loss: 0.7918 Acc: 0.7775
+
+Epoch 8/9
+----------
+Epoch completed in 1.000000m 48.224495s
+train Loss: 1.0886 Acc: 0.7155
+Epoch completed in 2.000000m 3.085865s
+valid Loss: 0.7884 Acc: 0.7763
+
+Epoch 9/9
+----------
+Epoch completed in 1.000000m 48.588541s
+train Loss: 1.1139 Acc: 0.7021
+Epoch completed in 2.000000m 3.330334s
+valid Loss: 0.7884 Acc: 0.7775
+
+Training complete in 31m 1s
+Best val Acc: 0.792176
+```
+
+So the results are up. We can already see the saturation of accuracy at 0.7922 at epoch 7 of 10 (note that we started at epoch 0). What's next would be to finish first the rest of the notebook to make sure its working then we can continue working on improving the network.
