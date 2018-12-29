@@ -886,3 +886,732 @@ So now we are looking at the Densenet169 results. The results in the accuracy ar
 <p align="center"><img src='.\Images\Validation_Image-Densenet169(Poinsettia).png' width=500px></p>
 
 :gem: Additional guide from [Keras on Pre-trained models](https://keras.io/applications/)
+
+## December 18, 2018 - Day 39 of the Challenge
+
+So I am now back home and have set up my schedules for the holiday. First up for the non-work and non-family related activities is to complete the challenge. For today, I am checking on changing the LR_Scheduler from the plateau to Cosine annealing. Just checking if we get better results and speed.
+
+Next step has always been to deal with the imbalanced data with weights initialization during loading. This needs more reading on how to implement.
+
+```python
+'''
+Here are the results.
+Setup was: LR = 0.001, LR_scheduler = CosineAnnealingLR(optimizer, 5, eta_min=0.0001, last_epoch=-1), initial_model = densenet169, 15 epochs, Batchsize = 64
+'''
+
+# NOTE: Failed to run. This was not converging so I had to stop it. Baseline is just 2-3 mins per epoch based on previous implementation. I let it run for 10 mins before I interrupted the run.
+
+'''
+# Criteria NLLLoss which is recommended with Softmax final layer
+criteria = nn.NLLLoss()
+# Observe that all parameters are being optimized
+optimizer = optim.Adam(model.classifier.parameters(), lr=0.001)
+# Decay LR by a factor of 0.1 every 4 epochs
+sched = lr_scheduler.StepLR(optimizer, step_size=4, gamma=0.1)
+# Number of epochs
+eps=15
+
+# TODO: Define our classifier that will be replacing the last layer in VGG19.
+classifier = nn.Sequential(
+    OrderedDict([
+        ('fc1',nn.Linear(1664,832)),
+        ('relu_1',nn.ReLU()),
+        ('drop_1',nn.Dropout(p=0.5)),
+        ('fc2',nn.Linear(832,256)),
+        ('relu_2',nn.ReLU()),
+        ('drop_2',nn.Dropout(p=0.5)),
+        ('fc3',nn.Linear(256,102)),
+        ('output',nn.LogSoftmax(dim = 1))
+    ]))
+# Transfer the classifier results
+model.classifier = classifier
+'''
+
+cuda
+Epoch 0/14
+----------
+train epoch completed in 2.000000m 15.521907s
+train Loss: 1.4853 Acc: 0.5940
+valid epoch completed in 2.000000m 33.571836s
+valid Loss: 0.6899 Acc: 0.8240
+
+Epoch 1/14
+----------
+train epoch completed in 2.000000m 15.721620s
+train Loss: 1.3806 Acc: 0.6212
+valid epoch completed in 2.000000m 33.740467s
+valid Loss: 0.6240 Acc: 0.8582
+
+Epoch 2/14
+----------
+train epoch completed in 2.000000m 15.844700s
+train Loss: 1.2923 Acc: 0.6438
+valid epoch completed in 2.000000m 33.840051s
+valid Loss: 0.5662 Acc: 0.8594
+
+Epoch 3/14
+----------
+train epoch completed in 2.000000m 15.681037s
+train Loss: 1.2297 Acc: 0.6589
+valid epoch completed in 2.000000m 33.712121s
+valid Loss: 0.5207 Acc: 0.8680
+
+Epoch 4/14
+----------
+train epoch completed in 2.000000m 15.632705s
+train Loss: 1.0636 Acc: 0.7117
+valid epoch completed in 2.000000m 33.643717s
+valid Loss: 0.4406 Acc: 0.8875
+
+Epoch 5/14
+----------
+train epoch completed in 2.000000m 15.663321s
+train Loss: 0.9841 Acc: 0.7271
+valid epoch completed in 2.000000m 33.618531s
+valid Loss: 0.4310 Acc: 0.8851
+
+Epoch 6/14
+----------
+train epoch completed in 2.000000m 15.379978s
+train Loss: 0.9456 Acc: 0.7337
+valid epoch completed in 2.000000m 33.347549s
+valid Loss: 0.4223 Acc: 0.8973
+
+Epoch 7/14
+----------
+train epoch completed in 2.000000m 15.419425s
+train Loss: 0.9903 Acc: 0.7274
+valid epoch completed in 2.000000m 33.390536s
+valid Loss: 0.4082 Acc: 0.8985
+
+Epoch 8/14
+----------
+train epoch completed in 2.000000m 15.504078s
+train Loss: 0.9258 Acc: 0.7408
+valid epoch completed in 2.000000m 33.512190s
+valid Loss: 0.4087 Acc: 0.8912
+
+Epoch 9/14
+----------
+train epoch completed in 2.000000m 15.572731s
+train Loss: 0.9376 Acc: 0.7392
+valid epoch completed in 2.000000m 33.562267s
+valid Loss: 0.4098 Acc: 0.8912
+
+Epoch 10/14
+----------
+train epoch completed in 2.000000m 15.705945s
+train Loss: 0.9370 Acc: 0.7437
+valid epoch completed in 2.000000m 33.676492s
+valid Loss: 0.4098 Acc: 0.8998
+
+Epoch 11/14
+----------
+train epoch completed in 2.000000m 15.553149s
+train Loss: 0.9427 Acc: 0.7418
+valid epoch completed in 2.000000m 33.542307s
+valid Loss: 0.4039 Acc: 0.8949
+
+Epoch 12/14
+----------
+train epoch completed in 2.000000m 15.767509s
+train Loss: 0.9314 Acc: 0.7440
+valid epoch completed in 2.000000m 33.803519s
+valid Loss: 0.4091 Acc: 0.8888
+
+Epoch 13/14
+----------
+train epoch completed in 2.000000m 15.360914s
+train Loss: 0.9496 Acc: 0.7346
+valid epoch completed in 2.000000m 33.314968s
+valid Loss: 0.4088 Acc: 0.8985
+
+Epoch 14/14
+----------
+train epoch completed in 2.000000m 15.313187s
+train Loss: 0.9426 Acc: 0.7357
+valid epoch completed in 2.000000m 33.208476s
+valid Loss: 0.4045 Acc: 0.8973
+
+Training complete in 38m 24s
+Best val Acc: 0.899756
+
+```
+
+Leaky ReLU is leading.
+
+```python
+'''
+Setup:
+
+# Criteria NLLLoss which is recommended with Softmax final layer
+criteria = nn.NLLLoss()
+# Observe that all parameters are being optimized
+optimizer = optim.Adam(model.classifier.parameters(), lr=0.001)
+# Decay LR by a factor of 0.1 every 4 epochs
+# sched = lr_scheduler.StepLR(optimizer, step_size=4, gamma=0.1)
+sched = lr_scheduler.MultiStepLR(optimizer, milestones=[5,10], gamma=0.1)
+# Number of epochs
+eps=15
+
+
+# TODO: Define our classifier that will be replacing the last layer in VGG19.
+classifier = nn.Sequential(
+    OrderedDict([
+        ('fc1',nn.Linear(1664,832)),
+        ('relu_1',nn.ReLU()),
+        ('drop_1',nn.Dropout(p=0.5)),
+        ('fc2',nn.Linear(832,256)),
+        ('relu_2',nn.ReLU()),
+        ('drop_2',nn.Dropout(p=0.5)),
+        ('fc3',nn.Linear(256,102)),
+        ('output',nn.LogSoftmax(dim = 1))
+    ]))
+# Transfer the classifier results
+model.classifier = classifier
+
+Saved as: classifier_densenet169_V2.pth
+'''
+
+
+cuda
+Epoch 0/14
+----------
+train epoch completed in 27.000000m 50.823827s
+train Loss: 4.2127 Acc: 0.0968
+valid epoch completed in 32.000000m 1.857351s
+valid Loss: 3.0348 Acc: 0.3509
+
+Epoch 1/14
+----------
+train epoch completed in 2.000000m 16.945112s
+train Loss: 2.7928 Acc: 0.3127
+valid epoch completed in 2.000000m 35.400791s
+valid Loss: 1.5916 Acc: 0.5856
+
+Epoch 2/14
+----------
+train epoch completed in 2.000000m 17.341003s
+train Loss: 2.0218 Acc: 0.4664
+valid epoch completed in 2.000000m 35.742949s
+valid Loss: 1.0676 Acc: 0.7372
+
+Epoch 3/14
+----------
+train epoch completed in 2.000000m 16.459388s
+train Loss: 1.6944 Acc: 0.5449
+valid epoch completed in 2.000000m 34.693902s
+valid Loss: 0.8405 Acc: 0.7812
+
+Epoch 4/14
+----------
+train epoch completed in 2.000000m 17.231413s
+train Loss: 1.4676 Acc: 0.5934
+valid epoch completed in 2.000000m 35.613135s
+valid Loss: 0.6584 Acc: 0.8325
+
+Epoch 5/14
+----------
+train epoch completed in 2.000000m 16.795884s
+train Loss: 1.2269 Acc: 0.6586
+valid epoch completed in 2.000000m 35.062843s
+valid Loss: 0.5661 Acc: 0.8582
+
+Epoch 6/14
+----------
+train epoch completed in 2.000000m 16.483428s
+train Loss: 1.2152 Acc: 0.6751
+valid epoch completed in 2.000000m 35.016291s
+valid Loss: 0.5456 Acc: 0.8655
+
+Epoch 7/14
+----------
+train epoch completed in 2.000000m 16.653298s
+train Loss: 1.1587 Acc: 0.6833
+valid epoch completed in 2.000000m 34.980344s
+valid Loss: 0.5370 Acc: 0.8606
+
+Epoch 8/14
+----------
+train epoch completed in 2.000000m 16.881268s
+train Loss: 1.1406 Acc: 0.6835
+valid epoch completed in 2.000000m 35.196797s
+valid Loss: 0.5188 Acc: 0.8680
+
+Epoch 9/14
+----------
+train epoch completed in 2.000000m 17.073467s
+train Loss: 1.1310 Acc: 0.6903
+valid epoch completed in 2.000000m 35.421782s
+valid Loss: 0.4997 Acc: 0.8741
+
+Epoch 10/14
+----------
+train epoch completed in 2.000000m 16.765958s
+train Loss: 1.1389 Acc: 0.6917
+valid epoch completed in 2.000000m 35.108592s
+valid Loss: 0.5080 Acc: 0.8704
+
+Epoch 11/14
+----------
+train epoch completed in 2.000000m 16.707246s
+train Loss: 1.1376 Acc: 0.6845
+valid epoch completed in 2.000000m 34.987313s
+valid Loss: 0.4987 Acc: 0.8729
+
+Epoch 12/14
+----------
+train epoch completed in 2.000000m 16.688344s
+train Loss: 1.1085 Acc: 0.6981
+valid epoch completed in 2.000000m 35.346166s
+valid Loss: 0.4955 Acc: 0.8741
+
+Epoch 13/14
+----------
+train epoch completed in 2.000000m 16.558425s
+train Loss: 1.0919 Acc: 0.7015
+valid epoch completed in 2.000000m 34.846010s
+valid Loss: 0.4938 Acc: 0.8753
+
+Epoch 14/14
+----------
+train epoch completed in 2.000000m 16.554662s
+train Loss: 1.0972 Acc: 0.6961
+valid epoch completed in 2.000000m 35.296205s
+valid Loss: 0.4932 Acc: 0.8729
+
+Training complete in 68m 16s
+Best val Acc: 0.875306
+
+
+```
+
+Quick Segway to the results from V1 Classifier.
+
+```python
+'''
+classifier_densenet169_V1.pth
+'''
+
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.84375
+Batch accuracy (Size 32): 0.84375
+Batch accuracy (Size 32): 1.0
+Batch accuracy (Size 32): 0.9375
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 1.0
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 1.0
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.9375
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.8125
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.8125
+Batch accuracy (Size 32): 0.84375
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 1.0
+Mean accuracy: 0.9194711446762085
+
+0.91947114
+```
+
+```python
+'''
+classifier_densenet169_V2.pth
+'''
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.84375
+Batch accuracy (Size 32): 0.84375
+Batch accuracy (Size 32): 0.9375
+Batch accuracy (Size 32): 0.8125
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.78125
+Batch accuracy (Size 32): 0.78125
+Batch accuracy (Size 32): 0.84375
+Batch accuracy (Size 32): 0.9375
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.9375
+Batch accuracy (Size 32): 1.0
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.8125
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.8333333134651184
+Mean accuracy: 0.8818109035491943
+
+0.8818109
+```
+
+```python
+'''
+classifier_densenet169_V3.pth
+Changes: SGD optim used
+optimizer = optim.SGD(model.classifier.parameters(), lr=0.01, momentum = 0.9)
+'''
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.84375
+Batch accuracy (Size 32): 0.9375
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.84375
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.78125
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.9375
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.84375
+Batch accuracy (Size 32): 0.9375
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.9375
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.9375
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.944444477558136
+Mean accuracy: 0.9053151607513428
+
+0.90531516
+```
+
+```python
+'''
+classifier_densenet169_V4.pth
+Changes: SGD optim used
+optimizer = optim.SGD(model.classifier.parameters(), lr=0.01, momentum = 0.9)
+LR_Sched = Reduce on platue (?) Check
+'''
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.84375
+Batch accuracy (Size 32): 0.9375
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.84375
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.78125
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.9375
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.84375
+Batch accuracy (Size 32): 0.9375
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.9375
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.9375
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.944444477558136
+Mean accuracy: 0.9053151607513428
+
+0.90531516
+```
+
+I need to study [Finetuning in PyTorch](https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html). It could improve the results possibly. Also I have figured out why yesterday's run did not run completely, the optimizer/scheduler.step part was on the wrong config.
+
+```python
+'''study this:https://gist.github.com/avijit9/1c7eebf124a02a555f7626a0fbcd04a5
+'''
+# pdb.set_trace()
+
+    criterion = nn.CrossEntropyLoss().cuda()
+    optimizer = torch.optim.SGD([
+                {'params': model.conv1.parameters()},
+                {'params': model.bn1.parameters()},
+                {'params': model.relu.parameters()},
+                {'params': model.maxpool.parameters()},
+                {'params': model.layer1.parameters()},
+                {'params': model.layer2.parameters()},
+                {'params': model.layer3.parameters()},
+                {'params': model.layer4.parameters()},
+                {'params': model.avgpool.parameters()},
+                {'params': model.fc.parameters(), 'lr': opt.lr}
+            ], lr=opt.lr*0.1, momentum=0.9)
+    #optimizer = torch.optim.SGD(model.parameters(), opt.lr, momentum = opt.momentum, weight_decay = opt.weight_decay)
+#pdb.set_trace()
+```
+
+## December 28, 2018 - Day 49 of the Challenge
+
+Today is the resumption of the challenge. I was on Christmas break and have just found the time again to resume training and improving the model. :hocho: :bomb:
+
+This is cutting it close but it is still on. Also, I have a mentee in the program. She is also an Electronics/Electrical engineering major from Malaysia. Our goal is for her to be able to cram as much lessons as possible and then join in on the challenge. She does not seem to have questions so my approach would be to motivate her and check up on her progress. :wink: Its great that I have a check on my own progress as well.
+
+```python
+'''
+Changed the transforms, added is the more appropriate term:
+Added color jitter to randomly apply variations in the color. We would want the shape to be the basis YES?
+Tried adding affine transformation as well.
+
+
+        transforms.ColorJitter(brightness=10, contrast=10, saturation=10, hue=10),
+        transforms.RandomAffine(degrees=360.0, translate=None, scale=(0.5,2.0), shear=90.0, resample=False, fillcolor=0),
+
+Reduced the dropout rate to 0.3 was 0.5
+
+
+# TODO: Define our classifier that will be replacing the last layer in VGG19.
+classifier = nn.Sequential(
+    OrderedDict([
+        ('fc1',nn.Linear(1664,832)),
+        ('relu_1',nn.ReLU()),
+        ('drop_1',nn.Dropout(p=0.3)),
+        ('fc2',nn.Linear(832,256)),
+        ('relu_2',nn.ReLU()),
+        ('drop_2',nn.Dropout(p=0.3)),
+        ('fc3',nn.Linear(256,102)),
+        ('output',nn.LogSoftmax(dim = 1))
+    ]))
+# Transfer the classifier results
+model.classifier = classifier
+'''
+# pdb.set_trace()
+
+    criterion = nn.CrossEntropyLoss().cuda()
+    optimizer = torch.optim.SGD([
+                {'params': model.conv1.parameters()},
+                {'params': model.bn1.parameters()},
+                {'params': model.relu.parameters()},
+                {'params': model.maxpool.parameters()},
+                {'params': model.layer1.parameters()},
+                {'params': model.layer2.parameters()},
+                {'params': model.layer3.parameters()},
+                {'params': model.layer4.parameters()},
+                {'params': model.avgpool.parameters()},
+                {'params': model.fc.parameters(), 'lr': opt.lr}
+            ], lr=opt.lr*0.1, momentum=0.9)
+    #optimizer = torch.optim.SGD(model.parameters(), opt.lr, momentum = opt.momentum, weight_decay = opt.weight_decay)
+#pdb.set_trace()
+
+Batch accuracy (Size 32): 0.15625
+Batch accuracy (Size 32): 0.125
+Batch accuracy (Size 32): 0.15625
+Batch accuracy (Size 32): 0.09375
+Batch accuracy (Size 32): 0.21875
+Batch accuracy (Size 32): 0.1875
+Batch accuracy (Size 32): 0.125
+Batch accuracy (Size 32): 0.15625
+Batch accuracy (Size 32): 0.28125
+Batch accuracy (Size 32): 0.1875
+Batch accuracy (Size 32): 0.21875
+Batch accuracy (Size 32): 0.25
+Batch accuracy (Size 32): 0.15625
+Batch accuracy (Size 32): 0.21875
+Batch accuracy (Size 32): 0.09375
+Batch accuracy (Size 32): 0.25
+Batch accuracy (Size 32): 0.0
+Batch accuracy (Size 32): 0.09375
+Batch accuracy (Size 32): 0.125
+Batch accuracy (Size 32): 0.09375
+Batch accuracy (Size 32): 0.15625
+Batch accuracy (Size 32): 0.03125
+Batch accuracy (Size 32): 0.21875
+Batch accuracy (Size 32): 0.125
+Batch accuracy (Size 32): 0.0625
+Batch accuracy (Size 32): 0.2222222238779068
+Mean accuracy: 0.15397970378398895
+
+0.1539797
+```
+
+So the results are not that promising. The accuracy is low to begin with, possibly due the randomness of affine. Possibly turn of the affine for now.
+
+I have removed random affine for the next run below. Off the bat the speed is really fast. I think I have figured out how transform works. I think the transforms happen at the very first epoch that is why using very intensive transforms are going to eat up the compute time at the very first epoch run.
+
+```python
+'''
+removed the affine random transform. Retained the rest of the setup from above.
+'''
+
+
+Batch accuracy (Size 32): 0.5
+Batch accuracy (Size 32): 0.53125
+Batch accuracy (Size 32): 0.6875
+Batch accuracy (Size 32): 0.625
+Batch accuracy (Size 32): 0.59375
+Batch accuracy (Size 32): 0.6875
+Batch accuracy (Size 32): 0.53125
+Batch accuracy (Size 32): 0.46875
+Batch accuracy (Size 32): 0.53125
+Batch accuracy (Size 32): 0.6875
+Batch accuracy (Size 32): 0.59375
+Batch accuracy (Size 32): 0.5
+Batch accuracy (Size 32): 0.6875
+Batch accuracy (Size 32): 0.625
+Batch accuracy (Size 32): 0.625
+Batch accuracy (Size 32): 0.625
+Batch accuracy (Size 32): 0.5625
+Batch accuracy (Size 32): 0.6875
+Batch accuracy (Size 32): 0.53125
+Batch accuracy (Size 32): 0.40625
+Batch accuracy (Size 32): 0.5625
+Batch accuracy (Size 32): 0.5625
+Batch accuracy (Size 32): 0.625
+Batch accuracy (Size 32): 0.5625
+Batch accuracy (Size 32): 0.53125
+Batch accuracy (Size 32): 0.5
+Mean accuracy: 0.578125
+
+0.578125
+```
+
+So it was affine random that caused the very low accuracy score earlier. Now the max we can get is 0.5. So the idea is now to move the dropout probability back to 0.5. And its looking like the training is still stuck. Tried 25 episodes in the code run below and still have 50% accuracy, possibly due to the smaller size of the data?
+
+Will have to return to the earlier model which had 91% accuracy.
+
+```python
+'''
+What did I change?
+* I changed the episode count to 25 epochs to check if we can train it further, turns out we cannot with the color jitter. Its not going to matter how much we change and augment the data when our sampling is off so I need to fix it.
+
+'''
+
+# RESULTS: TEST
+
+Batch accuracy (Size 32): 0.59375
+Batch accuracy (Size 32): 0.625
+Batch accuracy (Size 32): 0.59375
+Batch accuracy (Size 32): 0.65625
+Batch accuracy (Size 32): 0.59375
+Batch accuracy (Size 32): 0.53125
+Batch accuracy (Size 32): 0.71875
+Batch accuracy (Size 32): 0.53125
+Batch accuracy (Size 32): 0.6875
+Batch accuracy (Size 32): 0.5625
+Batch accuracy (Size 32): 0.625
+Batch accuracy (Size 32): 0.5625
+Batch accuracy (Size 32): 0.71875
+Batch accuracy (Size 32): 0.71875
+Batch accuracy (Size 32): 0.5
+Batch accuracy (Size 32): 0.5
+Batch accuracy (Size 32): 0.46875
+Batch accuracy (Size 32): 0.40625
+Batch accuracy (Size 32): 0.625
+Batch accuracy (Size 32): 0.625
+Batch accuracy (Size 32): 0.5
+Batch accuracy (Size 32): 0.59375
+Batch accuracy (Size 32): 0.59375
+Batch accuracy (Size 32): 0.625
+Batch accuracy (Size 32): 0.5625
+Batch accuracy (Size 32): 0.5555555820465088
+Mean accuracy: 0.5874732732772827
+
+0.5874733
+```
+
+For reference here was what we were able to achieve before we did the changes today:
+The accuracy was already high without the transforms. Actually, its not that we are transforming it that is causing the issue because theoretically it should add more robustness to our model. The problem is that the model was imbalanced to begin with causing the overtraining of other images compared to others which causes the issue (I think).
+
+```python
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.84375
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.9375
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.84375
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.944444477558136
+Mean accuracy: 0.9113247990608215
+
+0.9113248
+```
+
+## December 29, 2018 - Day 50 of the Challenge
+
+Goal for today is to figure out the sampler. But the first run would be to use the earlier model in V3 and then train it for more epochs to see if we can actually move past 91% in accuracy.
+
+```python
+'''
+What did I do?
+Return to the model for V3 and then train it for 30 episodes to see if it can move past the 91% accuracy.
+'''
+
+# RESULT
+
+Epoch 29/29
+-*--*--*--*--*--*--*--*--*--*-
+Epoch completed in 2.000000m 14.571949s
+train Loss: 0.6298 Acc: 0.8230
+Epoch completed in 0.000000m 17.766753s
+valid Loss: 0.2374 Acc: 0.9340
+
+Training complete in 76m 5s
+Best val Acc: 0.940098
+[(0, tensor(0.6968, device='cuda:0', dtype=torch.float64)), (1, tensor(0.7592, device='cuda:0', dtype=torch.float64)), (2, tensor(0.8130, device='cuda:0', dtype=torch.float64)), (3, tensor(0.8496, device='cuda:0', dtype=torch.float64)), (4, tensor(0.8447, device='cuda:0', dtype=torch.float64)), (5, tensor(0.8729, device='cuda:0', dtype=torch.float64)), (6, tensor(0.8594, device='cuda:0', dtype=torch.float64)), (7, tensor(0.8680, device='cuda:0', dtype=torch.float64)), (8, tensor(0.8875, device='cuda:0', dtype=torch.float64)), (9, tensor(0.8900, device='cuda:0', dtype=torch.float64)), (10, tensor(0.8888, device='cuda:0', dtype=torch.float64)), (11, tensor(0.9022, device='cuda:0', dtype=torch.float64)), (12, tensor(0.9034, device='cuda:0', dtype=torch.float64)), (13, tensor(0.9059, device='cuda:0', dtype=torch.float64)), (14, tensor(0.9010, device='cuda:0', dtype=torch.float64)), (15, tensor(0.9193, device='cuda:0', dtype=torch.float64)), (16, tensor(0.9132, device='cuda:0', dtype=torch.float64)), (17, tensor(0.9242, device='cuda:0', dtype=torch.float64)), (18, tensor(0.9193, device='cuda:0', dtype=torch.float64)), (19, tensor(0.9328, device='cuda:0', dtype=torch.float64)), (20, tensor(0.9254, device='cuda:0', dtype=torch.float64)), (21, tensor(0.9303, device='cuda:0', dtype=torch.float64)), (22, tensor(0.9230, device='cuda:0', dtype=torch.float64)), (23, tensor(0.9401, device='cuda:0', dtype=torch.float64)), (24, tensor(0.9389, device='cuda:0', dtype=torch.float64)), (25, tensor(0.9291, device='cuda:0', dtype=torch.float64)), (26, tensor(0.9401, device='cuda:0', dtype=torch.float64)), (27, tensor(0.9377, device='cuda:0', dtype=torch.float64)), (28, tensor(0.9328, device='cuda:0', dtype=torch.float64)), (29, tensor(0.9340, device='cuda:0', dtype=torch.float64))]
+
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.9375
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.9375
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.875
+Batch accuracy (Size 32): 0.9375
+Batch accuracy (Size 32): 1.0
+Batch accuracy (Size 32): 1.0
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.90625
+Batch accuracy (Size 32): 0.9375
+Batch accuracy (Size 32): 0.84375
+Batch accuracy (Size 32): 0.84375
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.96875
+Batch accuracy (Size 32): 0.8888888955116272
+Mean accuracy: 0.9356303811073303
+
+0.9356304
+
+```
